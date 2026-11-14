@@ -1,3 +1,5 @@
 <Solution>
-  <Project Path="TadweerHub.csproj" />
+  <Project Path="TadweerHub.PL\TadweerHub.PL.csproj" />
+  <Project Path="TadweerHub.BLL\TadweerHub.BLL.csproj" />
+  <Project Path="TadweerHub.DAL\TadweerHub.DAL.csproj" />
 </Solution>

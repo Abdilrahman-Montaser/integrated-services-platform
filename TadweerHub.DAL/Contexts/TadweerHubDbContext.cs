@@ -13,5 +13,8 @@ namespace TadweerHub.DAL.Contexts
         public DbSet<RegistrationDocument> RegistrationDocuments  { get; set; }
          
 
+        public DbSet<Lot> Lots => Set<Lot>();
+        public DbSet<LotImage> LotImages => Set<LotImage>();
+        public DbSet<MaterialType> MaterialTypes => Set<MaterialType>();
     }
 }

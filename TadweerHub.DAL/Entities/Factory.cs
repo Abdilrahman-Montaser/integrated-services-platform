@@ -6,6 +6,10 @@ namespace TadweerHub.DAL.Entities
 {
     public class Factory
     {
-        public int Id { get; set; }
+            public int User_Id { get; set; }
+            public string? Company_Name { get; set; } 
+            public string? Governorate { get; set; } 
+            public string? Address { get; set; } 
+            public User? User { get; set; }
     }
 }

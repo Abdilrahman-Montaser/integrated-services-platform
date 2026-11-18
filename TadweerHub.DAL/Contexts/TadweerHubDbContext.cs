@@ -30,3 +30,15 @@ namespace TadweerHub.DAL.Contexts
     }
 }
 
+        public DbSet<Factory> Factories { get; set; }
+        public DbSet<Workshop> Workshops { get; set; }  
+        public DbSet<Driver> Drivers { get; set; }
+        public DbSet<RegistrationRequest> RegistrationRequests { get; set; }
+        public DbSet<RegistrationDocument> RegistrationDocuments  { get; set; }
+         
+
+        public DbSet<Lot> Lots => Set<Lot>();
+        public DbSet<LotImage> LotImages => Set<LotImage>();
+        public DbSet<MaterialType> MaterialTypes => Set<MaterialType>();
+    }
+}

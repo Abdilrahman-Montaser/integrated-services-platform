@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TadweerHub.DAL.Entities;
 
 namespace TadweerHub.DAL.Configurations
@@ -11,7 +10,7 @@ namespace TadweerHub.DAL.Configurations
         {
             builder.ToTable("MaterialType");
             builder.HasKey(m => m.MaterialTypeId);
-            
+
             builder.Property(m => m.Name)
                 .IsRequired()
                .HasMaxLength(100);
@@ -23,6 +22,11 @@ namespace TadweerHub.DAL.Configurations
                    .WithOne(l => l.MaterialType)
                    .HasForeignKey(l => l.MaterialTypeId)
                    .OnDelete(DeleteBehavior.Restrict);
+        }
+
+        void IEntityTypeConfiguration<MaterialType>.Configure(EntityTypeBuilder<MaterialType> builder)
+        {
+            throw new NotImplementedException();
         }
     }
 }

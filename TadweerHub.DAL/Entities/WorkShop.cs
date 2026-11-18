@@ -4,8 +4,12 @@ using System.Text;
 
 namespace TadweerHub.DAL.Entities
 {
-    public class WorkShop
+    public class Workshop
     {
-        public int Id { get; set; }
+        public int UserId { get; set; }
+        public string? WorkshopName { get; set; } 
+        public string? Governorate { get; set; } 
+        public string? Address { get; set; } 
+        public User? User { get; set; } 
     }
 }

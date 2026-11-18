@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using TadweerHub.DAL.Contexts;
 using TadweerHub.DAL.Entities;
 using TadweerHub.DAL.Repositories.Interfaces;
@@ -8,9 +7,9 @@ namespace TadweerHub.DAL.Repositories.Classes
 {
     public class FactoryRepository : IFactoryRepository
     {
-        private readonly AppDbContext _context;
+        private readonly TadweerHubDbContext _context;
 
-        public FactoryRepository(AppDbContext context)
+        public FactoryRepository(TadweerHubDbContext context)
         {
             _context = context;
         }
@@ -69,6 +68,15 @@ namespace TadweerHub.DAL.Repositories.Classes
         public int SaveChanges()
         {
             return _context.SaveChanges();
+        }
+
+        public void Delete(int userId)
+        {
+            var factory = _context.Set<Factory>().FirstOrDefault(f => f.UserId == userId);
+            if (factory is not null)
+            {
+                _context.Set<Factory>().Remove(factory);
+            }
         }
     }
 }

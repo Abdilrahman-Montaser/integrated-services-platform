@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using TadweerHub.DAL.Contexts;
@@ -11,9 +12,9 @@ namespace TadweerHub.DAL.Repositories.Classes
     public class RegistrationRequestRepository : IRegistrationRequestRepository
     {
     
-        private readonly AppDbContext _context;
+        private readonly TadweerHubDbContext _context;
 
-        public RegistrationRequestRepository(AppDbContext context)
+        public RegistrationRequestRepository(TadweerHubDbContext context)
         {
             _context = context;
         }

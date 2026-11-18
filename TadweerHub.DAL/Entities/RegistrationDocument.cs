@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TadweerHub.DAL.Entities
+﻿namespace TadweerHub.DAL.Entities
 {
     public class RegistrationDocument
     {
-        public int Document_Id { get; set; }
-        public int Request_Id { get; set; }
-        public string? Doc_Type { get; set; } 
-        public string? File_Url { get; set; } 
-        public DateTime Uploaded_At { get; set; }
+        public int DocumentId { get; set; }
+        public int RequestId { get; set; }
+        public string? DocType { get; set; }
+        public string? FileUrl { get; set; }
+        public DateTime UploadedAt { get; set; }
 
-        public RegistrationRequest? Request { get; set; } 
+        public RegistrationRequest? Request { get; set; }
     }
 }

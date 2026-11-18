@@ -12,36 +12,36 @@ namespace TadweerHub.DAL.Configurations
     {
         public void Configure(EntityTypeBuilder<Delivery> builder)
         {
-            builder.HasKey(d => d.order_id);
-            builder.Property(d => d.order_id).ValueGeneratedNever();
+            builder.HasKey(d => d.OrderId);
+            builder.Property(d => d.OrderId).ValueGeneratedNever();
 
             builder.Property(d => d.status)
                 .HasDefaultValue(DeliveryStatus.Assigned);
 
-            builder.Property(d => d.delivery_code)
+            builder.Property(d => d.DeliveryCode)
                 .IsRequired()
                 .HasMaxLength(20);
 
-            builder.Property(d => d.failed_attempts)
+            builder.Property(d => d.FailedAttempts)
                 .HasDefaultValue(0);
 
-            builder.Property(d => d.weighed_kg)
+            builder.Property(d => d.WeighedKg)
                 .HasPrecision(18, 3);
 
-            builder.Property(d => d.weighbridge_image_url)
+            builder.Property(d => d.WeighbridgeImageUrl)
                 .HasMaxLength(500);
 
-            builder.Property(d => d.assigned_at)
+            builder.Property(d => d.AssignedAt)
                 .HasDefaultValueSql("GETUTCDATE()");
 
             builder.HasOne(d => d.Order)
                    .WithOne(o => o.Delivery)
-                   .HasForeignKey<Delivery>(d => d.order_id)
+                   .HasForeignKey<Delivery>(d => d.OrderId)
                    .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(d => d.Driver)
                    .WithMany(dr => dr.Deliveries)
-                   .HasForeignKey(d => d.driver_id)
+                   .HasForeignKey(d => d.DriverId)
                    .OnDelete(DeleteBehavior.Restrict);
 
 

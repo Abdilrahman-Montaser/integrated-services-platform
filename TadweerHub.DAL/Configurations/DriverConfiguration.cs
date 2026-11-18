@@ -4,22 +4,22 @@ using TadweerHub.DAL.Entities;
 
 namespace TadweerHub.DAL.Configurations;
 
-public class WorkshopConfiguration : IEntityTypeConfiguration<Workshop>
+public class DriverConfiguration : IEntityTypeConfiguration<Driver>
 {
-    public void Configure(EntityTypeBuilder<Workshop> builder)
+    public void Configure(EntityTypeBuilder<Driver> builder)
     {
-        builder.ToTable("Workshops");
+        builder.ToTable("Drivers");
 
-        builder.HasKey(w => w.UserId);
-        builder.Property(w => w.UserId).ValueGeneratedNever();
+        builder.HasKey(d => d.UserId);
+        builder.Property(d => d.UserId).ValueGeneratedNever();
 
-        builder.Property(w => w.WorkshopName).IsRequired().HasMaxLength(200);
-        builder.Property(w => w.Governorate).IsRequired().HasMaxLength(100);
-        builder.Property(w => w.Address).IsRequired().HasMaxLength(500);
+        builder.Property(d => d.Governorate).IsRequired().HasMaxLength(100);
+        builder.Property(d => d.VehicleType).IsRequired().HasMaxLength(100);
+        builder.Property(d => d.PlateNumber).IsRequired().HasMaxLength(50);
 
-        builder.HasOne(w => w.User)
+        builder.HasOne(d => d.User)
                .WithOne()
-               .HasForeignKey<Workshop>(w => w.UserId)
+               .HasForeignKey<Driver>(d => d.UserId)
                .OnDelete(DeleteBehavior.Cascade);
     }
 }

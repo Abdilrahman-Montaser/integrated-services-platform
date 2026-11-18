@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using TadweerHub.DAL.Contexts;
@@ -11,7 +12,6 @@ namespace TadweerHub.DAL.Repositories.Classes
         private readonly TadweerHubDbContext Context;
         public GenericRepository(TadweerHubDbContext context)
         {
-            Context=new TadweerHubDbContext();
             Context = context;
         }
         public void Add(T entity)

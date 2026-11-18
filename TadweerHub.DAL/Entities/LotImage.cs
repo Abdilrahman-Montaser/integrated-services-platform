@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TadweerHub.DAL.Entities
 {
-    internal class LotImage
+    public class LotImage
     {
         public int ImageId { get; set; }
         public int LotId { get; set; }

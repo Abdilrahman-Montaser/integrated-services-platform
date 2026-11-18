@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TadweerHub.DAL.Entities;
 
 namespace TadweerHub.DAL.Configurations
 {
-    public class LotImageConfiguration :IEntityTypeConfiguration <LotImage>
+    public class LotImageConfiguration : IEntityTypeConfiguration<LotImage>
     {
-        public void Configure (EntityTypeBuilder<LotImage> builder)
+        public void Configure(EntityTypeBuilder<LotImage> builder)
         {
             builder.ToTable("LotImage");
-            builder.HasKey(i=> i.ImageId);
+            builder.HasKey(i => i.ImageId);
             builder.Property(i => i.ImageUrl)
               .IsRequired()
               .HasMaxLength(500);
@@ -22,9 +21,7 @@ namespace TadweerHub.DAL.Configurations
             builder.HasIndex(i => new { i.LotId, i.IsPrimary })
               .IsUnique()
               .HasFilter("[IsPrimary] = 1");
-            
-        }
-            
 
+        }
     }
 }

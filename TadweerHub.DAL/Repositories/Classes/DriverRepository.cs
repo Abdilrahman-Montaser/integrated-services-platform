@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.EntityFrameworkCore;
 using TadweerHub.DAL.Contexts;
 using TadweerHub.DAL.Entities;
+using TadweerHub.DAL.Repositories.Interfaces;
 
 namespace TadweerHub.DAL.Repositories.Classes
 {
     public class DriverRepository : IDriverRepository
     {
-        private readonly AppDbContext _context;
+        private readonly TadweerHubDbContext _context;
 
-        public DriverRepository(AppDbContext context)
+        public DriverRepository(TadweerHubDbContext context)
         {
             _context = context;
         }

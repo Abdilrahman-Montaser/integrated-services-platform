@@ -13,27 +13,27 @@ namespace TadweerHub.DAL.Configurations
     {
         public void Configure(EntityTypeBuilder<Disputes> builder)
         {
-            builder.HasKey(d => d.dispute_id);
+            builder.HasKey(d => d.DisputeId);
 
-            builder.Property(d => d.reason)
+            builder.Property(d => d.Reason)
                 .IsRequired()
                 .HasMaxLength(1000);
-            builder.Property(d => d.resolution)
+            builder.Property(d => d.Resolution)
                 .HasMaxLength(1000);
 
-            builder.Property(d => d.status)
+            builder.Property(d => d.Status)
                 .HasDefaultValue(DisputeStatus.Open);
-            builder.Property(d => d.opened_at)
+            builder.Property(d => d.OpenedAt)
                 .HasDefaultValueSql("GETUTCDATE()");
 
             builder.HasOne(d => d.Order)
                    .WithMany()
-                   .HasForeignKey(d => d.order_id)
+                   .HasForeignKey(d => d.OrderId)
                    .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(d => d.OpenedByUser)
                    .WithMany()
-                   .HasForeignKey(d => d.opened_by)
+                   .HasForeignKey(d => d.OpenedBy)
                    .OnDelete(DeleteBehavior.Restrict);
         }
     }

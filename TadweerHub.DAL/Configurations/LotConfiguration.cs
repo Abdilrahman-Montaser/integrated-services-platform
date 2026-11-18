@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TadweerHub.DAL.Entities;
 
 namespace TadweerHub.DAL.Configurations
 {
-    internal class LotConfiguration :IEntityTypeConfiguration <Lot>
-
+    internal class LotConfiguration : IEntityTypeConfiguration<Lot>
     {
-        public void LotCongigure (EntityTypeBuilder<Lot> builder)
+        public void Configure(EntityTypeBuilder<Lot> builder)
         {
             builder.ToTable("Lot");
             builder.HasKey(l => l.LotId);
@@ -45,7 +43,7 @@ namespace TadweerHub.DAL.Configurations
                     .HasForeignKey(l => l.FactoryId)
                     .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasMany(l => l.Images)
+            builder.HasMany(l => l.LotImages)
               .WithOne(i => i.Lot)
               .HasForeignKey(i => i.LotId)
               .OnDelete(DeleteBehavior.Cascade);
@@ -54,6 +52,11 @@ namespace TadweerHub.DAL.Configurations
                    .WithOne(o => o.Lot)
                    .HasForeignKey(o => o.LotId)
                    .OnDelete(DeleteBehavior.Restrict);
+        }
+
+        public void LotCongigure(EntityTypeBuilder<Lot> builder)
+        {
+
 
         }
     }

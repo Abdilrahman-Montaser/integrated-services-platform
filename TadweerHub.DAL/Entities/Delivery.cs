@@ -7,19 +7,19 @@ namespace TadweerHub.DAL.Entities
 {
     public class Delivery
     {
-        public int order_id { get; set; }
+        public int OrderId { get; set; }
         public Order Order { get; set; }
-        public int? driver_id { get; set; }
+        public int? DriverId { get; set; }
         public Driver Driver { get; set; }
         public DeliveryStatus status { get; set; }
-        public string delivery_code { get; set; }
-        public int failed_attempts { get; set; }
-        public decimal? weighed_kg { get; set; }
-        public string? weighbridge_image_url { get; set; }
+        public string DeliveryCode { get; set; }
+        public int FailedAttempts { get; set; }
+        public decimal? WeighedKg { get; set; }
+        public string? WeighbridgeImageUrl { get; set; }
 
-        public DateTime assigned_at { get; set; }
-        public DateTime? handover_confirmed_at { get; set; }
-        public DateTime? started_at { get; set; }
-        public DateTime? confirmed_at { get; set; }
+        public DateTime AssignedAt { get; set; }
+        public DateTime? HandoverConfirmed_At { get; set; }
+        public DateTime? StartedAt { get; set; }
+        public DateTime? ConfirmedAt { get; set; }
     }
 }

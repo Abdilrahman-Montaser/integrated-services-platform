@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TadweerHub.DAL.Entities
 {
-    internal class MaterialType
+    public class MaterialType
     {
         public int MaterialTypeId { get; set; }
         public string Name { get; set; } = null!;

@@ -5,10 +5,12 @@ using TadweerHub.DAL.Entities;
 
 namespace TadweerHub.DAL.Configurations
 {
-    internal class DriverConfigurations : IEntityTypeConfiguration<Driver>
+    public class DriverConfigurations : IEntityTypeConfiguration<Driver>
     {
         public void Configure(EntityTypeBuilder<Driver> builder)
         {
+            builder.ToTable("Drivers");
+
             builder.HasKey(d => d.UserId);
             builder.Property(d => d.UserId)
                 .ValueGeneratedNever();
@@ -31,7 +33,7 @@ namespace TadweerHub.DAL.Configurations
             builder.HasOne(d => d.User)
                 .WithOne()
                 .HasForeignKey<Driver>(d => d.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
         }
     }

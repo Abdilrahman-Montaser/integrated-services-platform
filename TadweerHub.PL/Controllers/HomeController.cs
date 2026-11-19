@@ -1,5 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using TadweerHub.PL.Mock;
 using TadweerHub.PL.ViewModels;
 
 namespace TadweerHub.PL.Controllers
@@ -8,12 +9,13 @@ namespace TadweerHub.PL.Controllers
     {
         public IActionResult Index()
         {
-            return View();
-        }
+            // أحدث 4 لوطات معروضة (من الداتا الوهمية لحد ما الداتابيز تجهز)
+            var lots = MockData.Lots
+                .Where(l => l.Status == "active")
+                .Take(4)
+                .ToList();
 
-        public IActionResult Privacy()
-        {
-            return View();
+            return View(lots);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

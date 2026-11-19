@@ -4,7 +4,7 @@ using TadweerHub.DAL.Entities;
 
 namespace TadweerHub.DAL.Configurations
 {
-    internal class LotConfiguration : IEntityTypeConfiguration<Lot>
+    public class LotConfiguration : IEntityTypeConfiguration<Lot>
     {
         public void Configure(EntityTypeBuilder<Lot> builder)
         {
@@ -52,12 +52,6 @@ namespace TadweerHub.DAL.Configurations
                    .WithOne(o => o.Lot)
                    .HasForeignKey(o => o.LotId)
                    .OnDelete(DeleteBehavior.Restrict);
-        }
-
-        public void LotCongigure(EntityTypeBuilder<Lot> builder)
-        {
-
-
         }
     }
 }

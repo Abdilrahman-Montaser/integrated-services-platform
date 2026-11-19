@@ -1,0 +1,28 @@
+﻿@using System.Globalization
+@using TadweerHub.PL.ViewModels.Lots
+@model LotCardVM
+@* كارت اللوط. الاستخدام: <partial name="_LotCard" model="lot" /> *@
+<div class="swatch h-100">
+    <div class="swatch-strip @(Model.IsLight ? "light" : "")" style="--c:@Model.ColorHex;height:112px">
+        <span class="swatch-tag">@Model.Code</span>
+    </div>
+    <div class="swatch-body">
+        <div class="d-flex justify-content-between align-items-start mb-1">
+            <span class="fs-12 text-muted-tw">@Model.Material</span>
+            <partial name="_StatusPill" model="Model.Status" />
+        </div>
+        <h4>@Model.Name</h4>
+        <div class="swatch-meta mb-2">
+            <span><i class="bi bi-box-seam"></i>@Model.WeightKg.ToString("N0", CultureInfo.InvariantCulture) كجم</span>
+            <span><i class="bi bi-geo-alt"></i>@Model.Governorate</span>
+        </div>
+        <div class="fs-13 text-muted-tw mb-3">@Model.Factory</div>
+        <div class="swatch-foot">
+            <div>
+                <div class="fs-12 text-faint">السعر الإجمالي</div>
+                <span class="price">@Model.Price.ToString("N0", CultureInfo.InvariantCulture)<span class="cur">ج.م</span></span>
+            </div>
+            <a asp-controller="Lots" asp-action="Details" asp-route-id="@Model.Code" class="btn btn-tw-soft btn-sm">عرض التفاصيل</a>
+        </div>
+    </div>
+</div>

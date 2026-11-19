@@ -23,10 +23,5 @@ namespace TadweerHub.DAL.Configurations
                    .HasForeignKey(l => l.MaterialTypeId)
                    .OnDelete(DeleteBehavior.Restrict);
         }
-
-        void IEntityTypeConfiguration<MaterialType>.Configure(EntityTypeBuilder<MaterialType> builder)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

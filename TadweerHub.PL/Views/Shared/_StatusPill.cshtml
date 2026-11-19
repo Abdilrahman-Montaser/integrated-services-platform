@@ -1,0 +1,20 @@
+﻿@model string
+@* بادج الحالة. الاستخدام: <partial name="_StatusPill" model="@("transit")" /> *@
+@{
+    var (text, css) = (Model ?? "") switch
+    {
+        "completed" => ("مكتمل", "completed"),
+        "sold"      => ("مُباع", "completed"),
+        "transit"   => ("في الطريق", "transit"),
+        "funded"    => ("مموّل · محجوز", "funded"),
+        "reserved"  => ("محجوز", "funded"),
+        "disputed"  => ("نزاع مفتوح", "disputed"),
+        "rejected"  => ("مرفوض", "disputed"),
+        "active"    => ("معروض", "active"),
+        "draft"     => ("مسودة", "pending"),
+        "pending"   => ("قيد المراجعة", "pending"),
+        "cancelled" => ("ملغي", "pending"),
+        _           => ("—", "pending")
+    };
+}
+<span class="pill pill-@css"><i></i>@text</span>

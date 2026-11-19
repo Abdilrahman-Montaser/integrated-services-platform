@@ -1,8 +1,101 @@
+@model List<LotCardVM>
+
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "الرئيسية";
+
+    var steps = new[]
+    {
+        (Color: "#2F5D3A", Number: "01", Icon: "bi-upload", Title: "المصنع ينشر", Description: "يرفع المصنع اللوط بالصور والوزن والسعر بعد توثيق السجل التجاري والبطاقة الضريبية.", Light: false),
+        (Color: "#C6B186", Number: "02", Icon: "bi-shield-lock", Title: "الورشة تشتري بضمان", Description: "تدفع الورشة من محفظتها، ويُحجز المبلغ لدى المنصة — لا يصل للمصنع قبل التسليم.", Light: true),
+        (Color: "#D9693B", Number: "03", Icon: "bi-123", Title: "تأكيد الاستلام بالكود", Description: "تسلّم الورشة السائق كودًا من ٦ أرقام، وهو من يدخله عند التسليم، فيُحرَّر المبلغ للمصنع فورًا.", Light: false)
+    };
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="container-tw" style="padding-top:72px;padding-bottom:40px">
+  <div class="row align-items-center g-5">
+    <div class="col-6">
+      <div class="eyebrow mb-3">B2B · TEXTILE SURPLUS MARKETPLACE</div>
+      <h1 style="font-size:52px;line-height:1.25">بواقي مصنعك…<br>خامة ورشة غيرك.</h1>
+      <p class="mt-3 mb-4 text-muted-tw" style="font-size:18px;max-width:500px">تدوير يحوّل بواقي القماش والخامات من المصانع إلى قيمة للورش الصغيرة، بدفع محجوز بأمان في المحفظة حتى تأكيد الاستلام بالكود.</p>
+      <div class="d-flex gap-3">
+        <a asp-controller="Account" asp-action="Register" class="btn btn-tw-accent btn-lg">سجّل الآن <i class="bi bi-arrow-left"></i></a>
+        <a asp-controller="Lots" asp-action="Index" class="btn btn-tw-outline btn-lg">تصفّح اللوطات</a>
+      </div>
+      <div class="d-flex gap-4 mt-5 pt-2 fs-13 text-muted-tw">
+        <span>
+            <b class="mono fs-5" style="color:var(--ink)">1,840</b> طن تم تدويرها
+        </span>
+        <span>
+            <b class="mono fs-5" style="color:var(--ink)">312</b> مصنع وورشة
+        </span>
+        <span>
+            <b class="mono fs-5" style="color:var(--ink)">0</b> ج.م تضيع — دفع مضمون
+        </span>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="row g-3">
+        <div class="col-7"><div class="ph" style="--c:#34506E;height:300px"><span class="ph-label">صورة: رولات دنيم في مخزن المصنع</span></div></div>
+        <div class="col-5 d-flex flex-column gap-3">
+          <div class="ph" style="--c:#C4962C;height:142px">
+              <span class="ph-label">قصاقيص ملوّنة</span>
+          </div>
+          <div class="ph" style="--c:#7E3434;height:142px">
+              <span class="ph-label">بوليستر</span>
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="receipt py-3 px-4 d-flex align-items-center justify-content-between" style="border-radius:10px">
+            <div class="fs-13"><span class="text-faint">آخر صفقة ·</span>
+                دنيم أزرق — <span class="mono">3.4</span> طن
+            </div>
+            <partial name="_StatusPill" model="@("completed")" />
+            <span class="mono fw-semibold">61,200 ج.م</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how-it-works" class="container-tw" style="padding-top:64px">
+  <div class="d-flex justify-content-between align-items-end mb-4">
+    <div><div class="eyebrow mb-2">HOW IT WORKS</div><h2 style="font-size:32px;margin:0">كيف تعمل المنصة</h2></div>
+    <p class="text-muted-tw m-0" style="max-width:380px">ثلاث خطوات، والفلوس محجوزة في المنتصف حتى يستلم الطرفان حقّهما.</p>
+  </div>
+  <div class="row g-4">
+    @foreach (var step in steps)
+    {
+        <div class="col-4">
+            <div class="swatch">
+                <div class="swatch-strip @(step.Light ? "light" : "")" style="--c:@step.Color;height:56px">
+                    <span class="swatch-tag">STEP @step.Number</span>
+                </div>
+                <div class="swatch-body pt-4">
+                    <div class="d-flex align-items-center gap-3 mb-2">
+                        <span class="mono fs-1 fw-semibold" style="color:var(--sand-d);line-height:1">@step.Number</span>
+                        <i class="bi @step.Icon fs-4" style="color:var(--green)"></i>
+                    </div>
+                    <h4 style="font-size:20px">@step.Title</h4>
+                    <p class="text-muted-tw m-0 mt-1">@step.Description</p>
+                </div>
+            </div>
+        </div>
+    }
+  </div>
+</section>
+
+<section class="container-tw" style="padding-top:80px">
+  <div class="d-flex justify-content-between align-items-end mb-4">
+    <div><div class="eyebrow mb-2">LATEST LOTS</div><h2 style="font-size:32px;margin:0">أحدث اللوطات</h2></div>
+    <a asp-controller="Lots" asp-action="Index" class="btn btn-tw-outline">كل اللوطات <i class="bi bi-arrow-left"></i></a>
+  </div>
+  <div class="row g-4">
+    @foreach (var lot in Model.Take(4))
+    {
+        <div class="col-3">
+            <partial name="_LotCard" model="lot" />
+        </div>
+    }
+  </div>
+</section>

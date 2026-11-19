@@ -1,0 +1,45 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model List<TadweerHub.PL.Controllers.PendingAccount>
+@{
+    ViewData["Title"] = "Accounts";
+}
+<div dir="rtl">
+    <h2>الحسابات المعلقة</h2>
+    <p>
+        <a asp-controller="Admin" asp-action="Dashboard">العودة للداشبورد</a>
+    </p>
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>اسم الحساب</th>
+                <th>النوع </th>
+                <th>المدينة</th>
+                <th>الحالة</th>
+                <th>الإجراءات</th>
+            </tr>
+            </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                    <td>@item.Role</td>
+                    <td>@item.City</td>
+                    <td>@item.Status</td>
+                    <td>
+                        <button type="button">قبول</button>
+                        <button type="button">رفض</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+   
+    
+</div>

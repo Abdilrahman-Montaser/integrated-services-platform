@@ -1,0 +1,42 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@ 
+@model List<TadweerHub.PL.ViewModels.Orders.OrderRowVM>
+@{
+    ViewData["Title"] = "Dashboard";
+}
+<div dir="rtl">
+    <h2>لوحة تحكم الأدمن</h2>
+    <p>
+        <a asp-controller="Admin" asp-action="Accounts">صفحة الحسابات</a>
+    </p>
+    <p>عدد الطلبات:@Model.Count</p>
+    <p>إجمالي  المبيعات :@Model.Sum(x=>x.Total)</p>
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr>
+                <th>رقم الطلب </th>
+                <th>كود اللوت </th>
+                <th>الخامة </th>
+                <th>المصنع </th>
+                <th>الورشة  </th>
+                <th>الحالة  </th>
+                <th>الإجمالي  </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var item in Model)
+            {
+                <tr>
+                    <td>@item.OrderNo</td>
+                    <td>@item.LotCode</td>
+                    <td>@item.LotName</td>
+                    <td>@item.Factory</td>
+                    <td>@item.Workshop</td>
+                    <td>@item.Status</td>
+                    <td>@item.Total</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

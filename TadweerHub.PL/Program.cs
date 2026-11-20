@@ -14,14 +14,13 @@ builder.Services.AddDbContext<TadweerHubDbContext>(options =>
 //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
 //    .AddEntityFrameworkStores<TadweerHubDbContext>();
 
-builder.Services.AddScoped<IDriverRepository, DriverRepository>();
-builder.Services.AddScoped<IFactoryRepository, FactoryRepository>();
-builder.Services.AddScoped<IWorkshopRepository, WorkshopRepository>();
-builder.Services.AddScoped<IRegistrationRequestRepository, RegistrationRequestRepository>();
-builder.Services.AddScoped<IRegistrationDocumentRepository, RegistrationDocumentRepository>();
-builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
-builder.Services.AddScoped<IDisputeRepository, DisputeRepository>();
-builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IWalletRepository, WalletRepository>();
+builder.Services.AddScoped<IWalletTransactionRepository, WalletTransactionRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<ILotRepository, LotRepository>();
+builder.Services.AddScoped<ILotImageRepository, LotImageRepository>();
+builder.Services.AddScoped<IMaterialTypeRepository, MaterialTypeRepository>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();

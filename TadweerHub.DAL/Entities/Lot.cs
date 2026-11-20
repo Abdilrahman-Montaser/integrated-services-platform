@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using TadweerHub.DAL.Enums;
 
 namespace TadweerHub.DAL.Entities
 {
@@ -18,7 +16,7 @@ namespace TadweerHub.DAL.Entities
         public decimal TotalPrice { get; set; }
         public string Governorate { get; set; }
         public string PickupAddress { get; set; }
-        public string Status { get; set; }  //Draft|Active|Reserved|Sold
+        public LotStatus Status { get; set; }  //Draft|Active|Reserved|Sold
         public bool IsDeleted { get; set; }
         public byte[] RowVersion { get; set; }
         public DateTime CreatedAt { get; set; }

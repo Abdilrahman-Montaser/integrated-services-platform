@@ -1,0 +1,65 @@
+﻿@using TadweerHub.PL.Mock
+@* القائمة الجانبية لأدوار المستخدمين (ورشة / مصنع / سائق / أدمن) *@
+@{
+    var role = MockSession.Role(Context);
+    var user = MockSession.User(role);
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var action = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+
+    (string Icon, string Text, string Ctrl, string Act, int Count)[] items = role switch
+    {
+        "workshop" => new[]
+        {
+            ("bi-shop",     "تصفّح اللوطات", "Lots",   "Index", 0),
+            ("bi-receipt",  "طلباتي",        "Orders", "Index", 0),
+            ("bi-wallet2",  "المحفظة",       "Wallet", "Index", 0),
+        },
+        "factory" => new[]
+        {
+            ("bi-speedometer2", "لوحة المصنع",  "Factory", "Dashboard",  0),
+            ("bi-stack",        "لوطاتي",       "Factory", "Lots",       0),
+            ("bi-plus-circle",  "إضافة لوط",    "Factory", "CreateLot",  0),
+            ("bi-receipt",      "طلبات لوطاتي", "Factory", "Orders",     0),
+        },
+        "driver" => new[]
+        {
+            ("bi-truck", "توصيلاتي", "Driver", "Index", 0),
+        },
+        "admin" => new[]
+        {
+            ("bi-speedometer2", "لوحة الإدارة",     "Admin", "Dashboard", 0),
+            ("bi-person-check", "الحسابات المعلّقة", "Admin", "Accounts",  7),
+        },
+        _ => new (string, string, string, string, int)[0]
+    };
+}
+<aside class="sidebar">
+    <a asp-controller="Home" asp-action="Index" class="logo">
+        <span class="logo-mark"></span>
+        <span class="logo-text">تدوير<small>TADWEER HUB</small></span>
+    </a>
+
+    <div class="side-role">@user.Label</div>
+
+    @foreach (var item in items)
+    {
+        var active = string.Equals(item.Ctrl, controller, StringComparison.OrdinalIgnoreCase)
+                  && string.Equals(item.Act, action, StringComparison.OrdinalIgnoreCase);
+        <a asp-controller="@item.Ctrl" asp-action="@item.Act" class="side-link @(active ? "active" : "")">
+            <i class="bi @item.Icon"></i> @item.Text
+            @if (item.Count > 0)
+            {
+                <span class="count">@item.Count</span>
+            }
+        </a>
+    }
+
+    <div class="side-user">
+        <span class="avatar">@user.Initials</span>
+        <div class="lh-sm">
+            <div class="fw-semibold fs-13">@user.Name</div>
+            <div class="fs-12 text-faint">@user.Sub</div>
+        </div>
+        <a href="/Dev/Role/guest" class="me-auto text-faint" title="خروج"><i class="bi bi-box-arrow-left"></i></a>
+    </div>
+</aside>

@@ -2,7 +2,7 @@
 
 namespace TadweerHub.DAL.Entities
 {
-    public class Disputes
+    public class Dispute
     {
         public int DisputeId { get; set; }
 

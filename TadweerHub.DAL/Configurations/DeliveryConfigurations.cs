@@ -1,8 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using TadweerHub.DAL.Entities;
 using TadweerHub.DAL.Enums;
 
@@ -15,7 +12,9 @@ namespace TadweerHub.DAL.Configurations
             builder.HasKey(d => d.OrderId);
             builder.Property(d => d.OrderId).ValueGeneratedNever();
 
-            builder.Property(d => d.status)
+            builder.Property(d => d.Status)
+                .HasConversion<string>()
+                .HasMaxLength(20)
                 .HasDefaultValue(DeliveryStatus.Assigned);
 
             builder.Property(d => d.DeliveryCode)

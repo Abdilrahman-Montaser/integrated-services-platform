@@ -1,20 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TadweerHub.DAL.Entities;
+﻿using TadweerHub.DAL.Entities;
 
 namespace TadweerHub.DAL.Repositories.Interfaces
 {
-    public interface IWorkshopRepository
+    public interface IWorkshopRepository : IGenericRepository<Workshop>
     {
         Workshop? GetByUserId(int userId, bool includeUser = false);
-        IReadOnlyList<Workshop> GetAll();
         IReadOnlyList<Workshop> GetByGovernorate(string governorate);
         bool Exists(int userId);
-
-        void Add(Workshop workshop);
-        void Update(Workshop workshop);
-        void Remove(Workshop workshop);
-        int SaveChanges();
     }
 }

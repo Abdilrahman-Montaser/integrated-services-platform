@@ -4,7 +4,7 @@ using TadweerHub.DAL.Entities;
 
 namespace TadweerHub.DAL.Configurations
 {
-    internal class WalletConfiguration : IEntityTypeConfiguration<Wallet>
+    public class WalletConfiguration : IEntityTypeConfiguration<Wallet>
     {
         public void Configure(EntityTypeBuilder<Wallet> builder)
         {
@@ -12,11 +12,21 @@ namespace TadweerHub.DAL.Configurations
             builder.HasKey(w => w.WalletId);
             builder.Property(w => w.AvailableBalance)
                 .HasPrecision(18, 2)
-              .IsRequired();
+                .IsRequired()
+                 .HasDefaultValue(0m);
+            builder.Property(w => w.HeldBalance)
+                .IsRequired()
+                .HasPrecision(18, 2)
+                .HasDefaultValue(0m);
             builder.Property(w => w.RowVersion)
                 .IsRowVersion();
             builder.HasIndex(w => w.UserId)
                 .IsUnique();
+
+            builder.HasOne(w => w.User)
+               .WithOne()
+               .HasForeignKey<Wallet>(w => w.UserId)
+               .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

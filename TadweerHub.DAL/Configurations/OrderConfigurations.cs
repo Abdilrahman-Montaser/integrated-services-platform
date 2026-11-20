@@ -22,11 +22,11 @@ namespace TadweerHub.DAL.Configurations
             builder.Property(o => o.TotalAmount).HasPrecision(18, 2);
 
             builder.Property(o => o.DeliveryAddress).IsRequired().HasMaxLength(500);
-            builder.Property(o => o.Status).HasDefaultValue(OrderStatus.Paid);
+            builder.Property(o => o.Status).HasConversion<string>().HasDefaultValue(OrderStatus.Paid);
             builder.Property(o => o.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
 
             builder.HasOne(o => o.Lot)
-                   .WithMany()
+                   .WithMany(l => l.Orders)
                    .HasForeignKey(o => o.LotId)
                    .OnDelete(DeleteBehavior.Restrict);
 

@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TadweerHub.DAL.Entities;
+﻿using TadweerHub.DAL.Entities;
 using TadweerHub.DAL.Enums;
 
 namespace TadweerHub.DAL.Repositories.Interfaces
 {
-    public interface IRegistrationRequestRepository
+    public interface IRegistrationRequestRepository : IGenericRepository<RegistrationRequest>
     {
-        RegistrationRequest? GetById(int requestId, bool includeDocuments = false);
         RegistrationRequest? GetByRequestNo(string requestNo, bool includeDocuments = false);
         IReadOnlyList<RegistrationRequest> GetByUserId(int userId);
         RegistrationRequest? GetLatestByUserId(int userId);
@@ -16,10 +12,5 @@ namespace TadweerHub.DAL.Repositories.Interfaces
         IReadOnlyList<RegistrationRequest> GetPending();
         bool RequestNoExists(string requestNo);
         bool HasPendingRequest(int userId);
-
-        void Add(RegistrationRequest request);
-        void Update(RegistrationRequest request);
-        void Remove(RegistrationRequest request);
-        int SaveChanges();
     }
 }

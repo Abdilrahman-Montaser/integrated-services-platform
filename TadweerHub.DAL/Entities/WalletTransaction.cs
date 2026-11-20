@@ -2,7 +2,7 @@
 using TadweerHub.DAL.Enums;
 namespace TadweerHub.DAL.Entities
 {
-    internal class WalletTransaction
+    public class WalletTransaction
     {
         public int TransactionId { get; set; }
 
@@ -19,8 +19,10 @@ namespace TadweerHub.DAL.Entities
         public PaymentMethod PaymentMethod { get; set; }
 
         public string? ExternalRef { get; set; }
+        public string? Note { get; set; }
 
         public DateTime CreatedAt { get; set; }
         public Wallet Wallet { get; set; } = null!;
+        public Order? Order { get; set; }
     }
 }

@@ -2,12 +2,8 @@
 
 namespace TadweerHub.DAL.Repositories.Interfaces
 {
-    internal interface INotificationRepository
+    public interface INotificationRepository : IGenericRepository<Notification>
     {
-        Notification? GetById(int notificationId);
         IEnumerable<Notification> GetByUserId(int userId);
-        void Add(Notification notification);
-        void Update(Notification notification);
-        void Save();
     }
 }

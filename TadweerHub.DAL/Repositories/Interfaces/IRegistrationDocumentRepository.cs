@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TadweerHub.DAL.Entities;
+﻿using TadweerHub.DAL.Entities;
 
 namespace TadweerHub.DAL.Repositories.Interfaces
 {
-    public interface IRegistrationDocumentRepository
+    public interface IRegistrationDocumentRepository : IGenericRepository<RegistrationDocument>
     {
-        RegistrationDocument? GetById(int documentId);
         IReadOnlyList<RegistrationDocument> GetByRequestId(int requestId);
 
-        void Add(RegistrationDocument document);
         void AddRange(IEnumerable<RegistrationDocument> documents);
-        void Remove(RegistrationDocument document);
         void RemoveRange(IEnumerable<RegistrationDocument> documents);
-        int SaveChanges();
     }
 }

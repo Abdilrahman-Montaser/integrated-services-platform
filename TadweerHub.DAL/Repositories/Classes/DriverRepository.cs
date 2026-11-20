@@ -5,18 +5,15 @@ using TadweerHub.DAL.Repositories.Interfaces;
 
 namespace TadweerHub.DAL.Repositories.Classes
 {
-    public class DriverRepository : IDriverRepository
+    public class DriverRepository : GenericRepository<Driver>, IDriverRepository
     {
-        private readonly TadweerHubDbContext _context;
-
-        public DriverRepository(TadweerHubDbContext context)
+        public DriverRepository(TadweerHubDbContext context) : base(context)
         {
-            _context = context;
         }
 
         public Driver? GetByUserId(int userId, bool includeUser = false)
         {
-            IQueryable<Driver> query = _context.Set<Driver>();
+            IQueryable<Driver> query = context.Set<Driver>();
 
             if (includeUser)
                 query = query.Include(d => d.User);
@@ -26,13 +23,13 @@ namespace TadweerHub.DAL.Repositories.Classes
 
         public Driver? GetByPlateNumber(string plateNumber)
         {
-            return _context.Set<Driver>()
+            return context.Set<Driver>()
                 .FirstOrDefault(d => d.PlateNumber == plateNumber);
         }
 
-        public IReadOnlyList<Driver> GetAll()
+        public IReadOnlyList<Driver> GetAllWithUsers()
         {
-            return _context.Set<Driver>()
+            return context.Set<Driver>()
                 .AsNoTracking()
                 .Include(d => d.User)
                 .ToList();
@@ -40,7 +37,7 @@ namespace TadweerHub.DAL.Repositories.Classes
 
         public IReadOnlyList<Driver> GetAvailable(string? governorate = null)
         {
-            IQueryable<Driver> query = _context.Set<Driver>()
+            IQueryable<Driver> query = context.Set<Driver>()
                 .AsNoTracking()
                 .Where(d => d.IsAvailable);
 
@@ -52,34 +49,14 @@ namespace TadweerHub.DAL.Repositories.Classes
 
         public bool Exists(int userId)
         {
-            return _context.Set<Driver>().Any(d => d.UserId == userId);
+            return context.Set<Driver>().Any(d => d.UserId == userId);
         }
 
         public bool PlateNumberExists(string plateNumber, int? excludeUserId = null)
         {
-            return _context.Set<Driver>()
+            return context.Set<Driver>()
                 .Any(d => d.PlateNumber == plateNumber
                                && (excludeUserId == null || d.UserId != excludeUserId));
-        }
-
-        public void Add(Driver driver)
-        {
-            _context.Set<Driver>().Add(driver);
-        }
-
-        public void Update(Driver driver)
-        {
-            _context.Set<Driver>().Update(driver);
-        }
-
-        public void Remove(Driver driver)
-        {
-            _context.Set<Driver>().Remove(driver);
-        }
-
-        public int SaveChanges()
-        {
-            return _context.SaveChanges();
         }
     }
 }

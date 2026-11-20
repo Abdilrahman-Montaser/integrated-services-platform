@@ -5,18 +5,15 @@ using TadweerHub.DAL.Repositories.Interfaces;
 
 namespace TadweerHub.DAL.Repositories.Classes
 {
-    public class FactoryRepository : IFactoryRepository
+    public class FactoryRepository : GenericRepository<Factory>, IFactoryRepository
     {
-        private readonly TadweerHubDbContext _context;
-
-        public FactoryRepository(TadweerHubDbContext context)
+        public FactoryRepository(TadweerHubDbContext context) : base(context)
         {
-            _context = context;
         }
 
         public Factory? GetByUserId(int userId, bool includeUser = false)
         {
-            IQueryable<Factory> query = _context.Set<Factory>();
+            IQueryable<Factory> query = context.Set<Factory>();
 
             if (includeUser)
             {
@@ -26,18 +23,9 @@ namespace TadweerHub.DAL.Repositories.Classes
             return query.FirstOrDefault(factory => factory.UserId == userId);
         }
 
-        public IReadOnlyList<Factory> GetAll()
-        {
-            return _context.Set<Factory>()
-                .AsNoTracking()
-                .Include(factory => factory.User)
-                .OrderBy(factory => factory.CompanyName)
-                .ToList();
-        }
-
         public IReadOnlyList<Factory> GetByGovernorate(string governorate)
         {
-            return _context.Set<Factory>()
+            return context.Set<Factory>()
                 .AsNoTracking()
                 .Where(factory => factory.Governorate == governorate)
                 .OrderBy(factory => factory.CompanyName)
@@ -46,37 +34,8 @@ namespace TadweerHub.DAL.Repositories.Classes
 
         public bool Exists(int userId)
         {
-            return _context.Set<Factory>()
+            return context.Set<Factory>()
                 .Any(factory => factory.UserId == userId);
-        }
-
-        public void Add(Factory factory)
-        {
-            _context.Set<Factory>().Add(factory);
-        }
-
-        public void Update(Factory factory)
-        {
-            _context.Set<Factory>().Update(factory);
-        }
-
-        public void Remove(Factory factory)
-        {
-            _context.Set<Factory>().Remove(factory);
-        }
-
-        public int SaveChanges()
-        {
-            return _context.SaveChanges();
-        }
-
-        public void Delete(int userId)
-        {
-            var factory = _context.Set<Factory>().FirstOrDefault(f => f.UserId == userId);
-            if (factory is not null)
-            {
-                _context.Set<Factory>().Remove(factory);
-            }
         }
     }
 }

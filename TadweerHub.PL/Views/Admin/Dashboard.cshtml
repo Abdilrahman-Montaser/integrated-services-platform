@@ -1,42 +1,124 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@ 
-@model List<TadweerHub.PL.ViewModels.Orders.OrderRowVM>
+﻿@model List<OrderRowVM>
 @{
-    ViewData["Title"] = "Dashboard";
+    ViewData["Title"] = "لوحة الإدارة";
+
+    var inv = CultureInfo.InvariantCulture;
+
+    // أرقام بتتحسب من قايمة الطلبات (هتفضل شغالة لما الداتا تيجي من الداتابيز)
+    var ordersCount = Model.Count;
+    var volume = Model.Sum(o => o.Total);
+    var held = Model.Where(o => o.Status is "funded" or "transit" or "disputed").Sum(o => o.Total);
+    var disputes = Model.Count(o => o.Status == "disputed");
 }
-<div dir="rtl">
-    <h2>لوحة تحكم الأدمن</h2>
-    <p>
-        <a asp-controller="Admin" asp-action="Accounts">صفحة الحسابات</a>
-    </p>
-    <p>عدد الطلبات:@Model.Count</p>
-    <p>إجمالي  المبيعات :@Model.Sum(x=>x.Total)</p>
-    <table border="1" cellpadding="6">
-        <thead>
-            <tr>
-                <th>رقم الطلب </th>
-                <th>كود اللوت </th>
-                <th>الخامة </th>
-                <th>المصنع </th>
-                <th>الورشة  </th>
-                <th>الحالة  </th>
-                <th>الإجمالي  </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach(var item in Model)
-            {
+
+<section class="container-tw" style="padding-top:40px">
+
+    <div class="page-head">
+        <div>
+            <h1>لوحة الإدارة</h1>
+            <p>نظرة عامة على المنصة · نوفمبر <span class="mono">2026</span></p>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-controller="Admin" asp-action="Accounts" class="btn btn-tw-soft">
+                <i class="bi bi-person-check"></i> الحسابات المعلقة
+            </a>
+            <select class="form-select" style="width:160px">
+                <option>آخر ٣٠ يوم</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        @* المستخدمين واللوطات أرقام ثابتة مؤقتاً (مش في قايمة الطلبات) *@
+        <div class="col-3">
+            <div class="tw-card stat">
+                <div class="lbl"><i class="bi bi-people"></i> المستخدمين</div>
+                <div class="val">1,284</div>
+                <div class="delta text-muted-tw"><span class="mono">312</span> مصنع · <span class="mono">846</span> ورشة · <span class="mono">126</span> سائق</div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="tw-card stat">
+                <div class="lbl"><i class="bi bi-stack"></i> اللوطات</div>
+                <div><span class="val">339</span><span class="unit">نشط</span></div>
+                <div class="delta">↑ <span class="mono">48</span> لوط جديد هذا الأسبوع</div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="tw-card stat">
+                <div class="lbl"><i class="bi bi-receipt"></i> الطلبات</div>
+                <div class="val">@ordersCount</div>
+                <div class="delta" style="color:var(--red)"><span class="mono">@disputes</span> نزاعات مفتوحة</div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="tw-card stat">
+                <div class="lbl"><i class="bi bi-cash-stack"></i> حجم التداول</div>
+                <div><span class="val">@volume.ToString("N0", inv)</span><span class="unit">ج.م</span></div>
+                <div class="delta" style="color:var(--blue)"><span class="mono">@held.ToString("N0", inv)</span> محجوز حاليًا</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tw-card">
+        <div class="tw-card-head">
+            <h3>كل الطلبات</h3>
+            <div class="d-flex gap-2">
+                <div class="input-group input-group-sm" style="width:240px">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input class="form-control" placeholder="رقم الطلب أو الطرف">
+                </div>
+                <select class="form-select form-select-sm" style="width:150px">
+                    <option>كل الحالات</option>
+                </select>
+            </div>
+        </div>
+
+        <table class="tw-table">
+            <thead>
                 <tr>
-                    <td>@item.OrderNo</td>
-                    <td>@item.LotCode</td>
-                    <td>@item.LotName</td>
-                    <td>@item.Factory</td>
-                    <td>@item.Workshop</td>
-                    <td>@item.Status</td>
-                    <td>@item.Total</td>
+                    <th>رقم الطلب</th>
+                    <th>اللوط</th>
+                    <th>المصنع</th>
+                    <th>الورشة</th>
+                    <th>الوزن</th>
+                    <th>القيمة</th>
+                    <th>الحالة</th>
+                    <th>التاريخ</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @foreach (var o in Model)
+                {
+                    <tr>
+                        <td class="num fw-semibold fs-13">@o.OrderNo</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="mini-swatch" style="--c:@o.ColorHex"></span>
+                                <div>
+                                    <div class="fw-semibold">@o.LotName</div>
+                                    <div class="num fs-12 text-faint">@o.LotCode</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="fs-13">@o.Factory</td>
+                        <td class="fs-13">@o.Workshop</td>
+                        <td class="fs-13"><span class="num">@o.WeightKg.ToString("N0", inv)</span> كجم</td>
+                        <td><span class="num fw-semibold">@o.Total.ToString("N0", inv)</span> <span class="cur">ج.م</span></td>
+                        <td><partial name="_StatusPill" model="o.Status" /></td>
+                        <td class="num fs-13">@o.CreatedAt.ToString("dd/MM/yyyy", inv)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-between align-items-center px-4 py-3 fs-13 text-muted-tw" style="border-top:1.5px dashed var(--line)">
+            <span>عرض <span class="mono">1–@ordersCount</span> من <span class="mono">@ordersCount</span></span>
+            <div class="d-flex gap-1">
+                <button class="btn btn-tw-ghost btn-sm" disabled>السابق</button>
+                <button class="btn btn-tw-soft btn-sm" disabled>التالي</button>
+            </div>
+        </div>
+    </div>
+
+</section>

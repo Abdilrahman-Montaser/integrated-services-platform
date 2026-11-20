@@ -1,12 +1,9 @@
-﻿@using System.Globalization
-@using TadweerHub.PL.Mock
+﻿@using TadweerHub.PL.Mock
+@* Navbar الزوّار (صفحات الرئيسية والحساب، وأي صفحة والمستخدم زائر) *@
 @{
-    // مؤقت: الدور بييجي من كوكي بيتحط من /Dev/Role/{role}. هنبدّله بتسجيل الدخول الحقيقي بعدين.
-    var role = Context.Request.Cookies["tw-role"] ?? "guest";
-    var current = ViewContext.RouteData.Values["controller"]?.ToString();
-    string Cls(string controller) => "nav-link-tw" + (current == controller ? " active" : "");
-
-    var initials = role switch { "workshop" => "ور", "factory" => "مص", "driver" => "سا", "admin" => "أد", _ => "" };
+    var role = MockSession.Role(Context);
+    var user = MockSession.User(role);
+    var home = MockSession.HomeRoute(role);
 }
 <nav class="tw-nav">
     <div class="container-tw w-100 d-flex align-items-center gap-5">
@@ -16,28 +13,8 @@
         </a>
 
         <div class="d-flex align-items-center gap-4">
-            @switch (role)
-            {
-                case "workshop":
-                    <a asp-controller="Lots" asp-action="Index" class="@Cls("Lots")">تصفّح اللوطات</a>
-                    <a asp-controller="Orders" asp-action="Index" class="@Cls("Orders")">طلباتي</a>
-                    <a asp-controller="Wallet" asp-action="Index" class="@Cls("Wallet")">محفظتي</a>
-                    break;
-                case "factory":
-                    <a asp-controller="Factory" asp-action="Dashboard" class="@Cls("Factory")">لوحة المصنع</a>
-                    <a asp-controller="Lots" asp-action="Index" class="@Cls("Lots")">السوق</a>
-                    break;
-                case "driver":
-                    <a asp-controller="Driver" asp-action="Index" class="@Cls("Driver")">توصيلاتي</a>
-                    break;
-                case "admin":
-                    <a asp-controller="Admin" asp-action="Accounts" class="@Cls("Admin")">الحسابات المعلقة</a>
-                    <a asp-controller="Admin" asp-action="Dashboard" class="nav-link-tw">لوحة الأدمن</a>
-                    break;
-                default:
-                    <a asp-controller="Lots" asp-action="Index" class="@Cls("Lots")">تصفّح اللوطات</a>
-                    break;
-            }
+            <a asp-controller="Lots" asp-action="Index" class="nav-link-tw">تصفّح اللوطات</a>
+            <a href="/#how-it-works" class="nav-link-tw">كيف تعمل المنصة</a>
         </div>
 
         <div class="d-flex align-items-center gap-3 ms-auto">
@@ -48,14 +25,10 @@
             }
             else
             {
-                if (role == "workshop" || role == "factory")
-                {
-                    <span class="wallet-chip">
-                        <i class="bi bi-wallet2"></i>
-                        الرصيد <b class="mono">@MockData.Wallet.Available.ToString("N0", CultureInfo.InvariantCulture)</b> ج.م
-                    </span>
-                }
-                <span class="avatar">@initials</span>
+                <span class="avatar">@user.Initials</span>
+                <a asp-controller="@home.Controller" asp-action="@home.Action" class="btn btn-tw-primary btn-sm">
+                    <i class="bi bi-speedometer2"></i> الذهاب للوحتي
+                </a>
                 <a href="/Dev/Role/guest" class="btn btn-tw-ghost btn-sm">خروج</a>
             }
         </div>

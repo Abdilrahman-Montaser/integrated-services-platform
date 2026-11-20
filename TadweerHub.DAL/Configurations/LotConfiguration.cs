@@ -8,7 +8,7 @@ namespace TadweerHub.DAL.Configurations
     {
         public void Configure(EntityTypeBuilder<Lot> builder)
         {
-            builder.ToTable("Lot");
+            builder.ToTable("Lots");
             builder.HasKey(l => l.LotId);
             builder.Property(l => l.LotCode)
                .IsRequired()
@@ -48,10 +48,10 @@ namespace TadweerHub.DAL.Configurations
               .HasForeignKey(i => i.LotId)
               .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany(l => l.Orders)
-                   .WithOne(o => o.Lot)
-                   .HasForeignKey(o => o.LotId)
-                   .OnDelete(DeleteBehavior.Restrict);
+            //builder.HasMany(l => l.Orders)
+            //       .WithOne(o => o.Lot)
+            //       .HasForeignKey(o => o.LotId)
+            //       .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -5,7 +5,7 @@ using TadweerHub.DAL.Entities;
 
 namespace TadweerHub.DAL.Repositories.Interfaces
 {
-    public interface IDisputeRepository:IGenericRepository<Disputes>
+    public interface IDisputeRepository:IGenericRepository<Dispute>
     {
     }
 }

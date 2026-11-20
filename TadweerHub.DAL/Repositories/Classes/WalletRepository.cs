@@ -1,38 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TadweerHub.DAL.Contexts;
+﻿using TadweerHub.DAL.Contexts;
 using TadweerHub.DAL.Entities;
 using TadweerHub.DAL.Repositories.Interfaces;
 
-namespace TadweerHub.DAL.Repositories.Class
+namespace TadweerHub.DAL.Repositories.Classes
 {
-    internal class WalletRepository : IWalletRepository
+    public class WalletRepository : GenericRepository<Wallet>, IWalletRepository
     {
-        private readonly TadweerHubDbContext _context;
-        public WalletRepository(TadweerHubDbContext context)
+        public WalletRepository(TadweerHubDbContext context) : base(context)
         {
-            _context = context;
         }
-        public Wallet? GetById(int walletId)
+        public Wallet? GetByUserId(int userId)
         {
-            return _context.Set<Wallet>()
-                .FirstOrDefault(w => w.WalletId == walletId);
-        }
-       public Wallet? GetByUserId(int userId)
-        {
-            return _context.Set<Wallet>()
+            return context.Set<Wallet>()
                 .FirstOrDefault(w => w.UserId == userId);
-        }
-        public void Add(Wallet wallet)
-        {
-            _context.Set<Wallet>().Add(wallet);
-        }
-        public void Update(Wallet wallet)
-        {
-            _context.Set<Wallet>().Update(wallet);
-        }
-        public void Save()
-        {
-            _context.SaveChanges();
         }
     }
 }

@@ -2,12 +2,7 @@
 
 namespace TadweerHub.DAL.Repositories.Interfaces
 {
-    internal interface IWalletRepository
+    public interface IWalletRepository : IGenericRepository<Wallet>
     {
-        Wallet? GetById(int walletId);
-        Wallet? GetByUserId(int userId);
-        void Add(Wallet wallet);
-        void Update(Wallet wallet);
-        void Save();
     }
 }

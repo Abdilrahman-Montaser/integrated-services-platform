@@ -1,6 +1,6 @@
 ﻿namespace TadweerHub.DAL.Entities
 {
-    internal class Notification
+    public class Notification
     {
         public int NotificationId { get; set; }
 
@@ -13,5 +13,7 @@
         public bool IsRead { get; set; }
 
         public DateTime CreatedAt { get; set; }
+
+        public User User { get; set; } = null;
     }
 }

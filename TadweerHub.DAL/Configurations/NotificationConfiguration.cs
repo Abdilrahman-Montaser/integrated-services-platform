@@ -4,7 +4,7 @@ using TadweerHub.DAL.Entities;
 
 namespace TadweerHub.DAL.Configurations
 {
-    internal class NotificationConfiguration
+    public class NotificationConfiguration
         : IEntityTypeConfiguration<Notification>
     {
         public void Configure(EntityTypeBuilder<Notification> builder)
@@ -25,6 +25,11 @@ namespace TadweerHub.DAL.Configurations
                 .HasDefaultValueSql("GETUTCDATE()")
                 .IsRequired();
           builder.HasIndex(n => n.UserId);
+
+            builder.HasOne(n => n.User)
+                .WithMany()
+                .HasForeignKey(n => n.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

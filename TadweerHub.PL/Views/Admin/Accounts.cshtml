@@ -1,45 +1,108 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@model List<TadweerHub.PL.Controllers.PendingAccount>
+﻿@using System.Globalization
+@using TadweerHub.PL.ViewModels.Admin
+@model List<PendingAccountVM>
 @{
-    ViewData["Title"] = "Accounts";
-}
-<div dir="rtl">
-    <h2>الحسابات المعلقة</h2>
-    <p>
-        <a asp-controller="Admin" asp-action="Dashboard">العودة للداشبورد</a>
-    </p>
-    <table border="1" cellpadding="6">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>اسم الحساب</th>
-                <th>النوع </th>
-                <th>المدينة</th>
-                <th>الحالة</th>
-                <th>الإجراءات</th>
-            </tr>
-            </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.Id</td>
-                    <td>@item.Name</td>
-                    <td>@item.Role</td>
-                    <td>@item.City</td>
-                    <td>@item.Status</td>
-                    <td>
-                        <button type="button">قبول</button>
-                        <button type="button">رفض</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+    ViewData["Title"] = "الحسابات المعلّقة";
 
-   
-    
-</div>
+    var inv = CultureInfo.InvariantCulture;
+
+    // بيقبل القيمة بالإنجليزي (factory) أو بالعربي (مصنع)
+    string Kind(string r) => r switch
+    {
+        "factory" or "مصنع" => "factory",
+        "workshop" or "ورشة" => "workshop",
+        "driver" or "سائق" => "driver",
+        _ => r
+    };
+    string KindText(string r) => Kind(r) switch
+    {
+        "factory" => "مصنع",
+        "workshop" => "ورشة",
+        "driver" => "سائق",
+        _ => r
+    };
+    string Initials(string name)
+    {
+        var last = name.Split(' ', StringSplitOptions.RemoveEmptyEntries).LastOrDefault() ?? "";
+        return last.Length >= 2 ? last[..2] : last;
+    }
+
+    var factories = Model.Count(a => Kind(a.Role) == "factory");
+    var workshops = Model.Count(a => Kind(a.Role) == "workshop");
+    var drivers = Model.Count(a => Kind(a.Role) == "driver");
+}
+
+<section class="container-tw" style="padding-top:40px">
+
+    <div class="page-head">
+        <div>
+            <h1>الحسابات المعلّقة</h1>
+            <p><span class="mono">@Model.Count</span> حسابات بانتظار مراجعة المستندات · متوسط وقت المراجعة <span class="mono">6</span> ساعات</p>
+        </div>
+        <a asp-controller="Admin" asp-action="Dashboard" class="btn btn-tw-soft">
+            <i class="bi bi-arrow-right"></i> لوحة الإدارة
+        </a>
+    </div>
+
+    @* التابات شكل بس لحد ما نعمل فلترة *@
+    <div class="tabs-tw">
+        <a href="#" class="active">الكل<span class="mono">@Model.Count</span></a>
+        <a href="#">مصانع<span class="mono">@factories</span></a>
+        <a href="#">ورش<span class="mono">@workshops</span></a>
+        <a href="#">سائقون<span class="mono">@drivers</span></a>
+    </div>
+
+    <div class="tw-card">
+        <table class="tw-table">
+            <thead>
+                <tr>
+                    <th>اسم الشركة / الشخص</th>
+                    <th>النوع</th>
+                    <th>المحافظة</th>
+                    <th>المستندات</th>
+                    <th>تاريخ التقديم</th>
+                    <th style="width:220px">الإجراء</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var a in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="avatar">@Initials(a.Name)</span>
+                                <div class="fw-semibold">@a.Name</div>
+                            </div>
+                        </td>
+                        <td><span class="pill pill-active">@KindText(a.Role)</span></td>
+                        <td>@a.Governorate</td>
+                        <td>
+                            <div class="d-flex gap-2 align-items-center">
+                                @foreach (var d in a.Documents)
+                                {
+                                    <span class="doc-thumb" title="@d">@d.Split(' ')[0]</span>
+                                }
+                                @if (!string.IsNullOrEmpty(a.MissingDocument))
+                                {
+                                    <span class="fs-12" style="color:var(--red)">
+                                        <i class="bi bi-exclamation-circle"></i> ناقص @a.MissingDocument
+                                    </span>
+                                }
+                            </div>
+                        </td>
+                        <td class="num fs-13">@a.SubmittedAt.ToString("dd/MM · HH:mm", inv)</td>
+                        <td>
+                            @* الأزرار شكل بس دلوقتي. بعدين تبقى فورم POST بتبعت a.Id *@
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-tw-primary btn-sm"><i class="bi bi-check-lg"></i> قبول</button>
+                                <button type="button" class="btn btn-tw-danger btn-sm"><i class="bi bi-x-lg"></i> رفض</button>
+                                <button type="button" class="btn btn-tw-ghost btn-icon btn-sm" title="معاينة المستندات"><i class="bi bi-eye"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</section>

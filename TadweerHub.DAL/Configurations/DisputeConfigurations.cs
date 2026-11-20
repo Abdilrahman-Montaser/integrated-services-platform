@@ -1,18 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using TadweerHub.DAL.Entities;
 using TadweerHub.DAL.Enums;
 
 namespace TadweerHub.DAL.Configurations
 {
-    public class DisputeConfigurations : IEntityTypeConfiguration<Disputes>
+    public class DisputeConfigurations : IEntityTypeConfiguration<Dispute>
     {
-        public void Configure(EntityTypeBuilder<Disputes> builder)
+        public void Configure(EntityTypeBuilder<Dispute> builder)
         {
+            builder.ToTable("Disputes");
+
             builder.HasKey(d => d.DisputeId);
 
             builder.Property(d => d.Reason)
@@ -22,6 +20,7 @@ namespace TadweerHub.DAL.Configurations
                 .HasMaxLength(1000);
 
             builder.Property(d => d.Status)
+                .HasConversion<string>()
                 .HasDefaultValue(DisputeStatus.Open);
             builder.Property(d => d.OpenedAt)
                 .HasDefaultValueSql("GETUTCDATE()");

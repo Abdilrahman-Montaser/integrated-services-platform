@@ -4,7 +4,7 @@ using TadweerHub.DAL.Entities;
 
 namespace TadweerHub.DAL.Configurations
 {
-    internal class WalletTransactionConfiguration
+    public class WalletTransactionConfiguration
         : IEntityTypeConfiguration<WalletTransaction>
     {
         public void Configure(EntityTypeBuilder<WalletTransaction> builder)
@@ -30,6 +30,8 @@ namespace TadweerHub.DAL.Configurations
                 .IsRequired();
             builder.Property(t => t.ExternalRef)
                 .HasMaxLength(200);
+            builder.Property(t => t.Note)
+                .HasMaxLength(500);
             builder.Property(t => t.CreatedAt)
                 .HasDefaultValueSql("GETUTCDATE()")
                 .IsRequired();
@@ -39,6 +41,10 @@ namespace TadweerHub.DAL.Configurations
                 .WithMany(w => w.Transactions)
                 .HasForeignKey(t => t.WalletId)
                 .OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(t => t.Order)
+               .WithMany()
+               .HasForeignKey(t => t.OrderId)
+               .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

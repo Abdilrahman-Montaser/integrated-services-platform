@@ -4,7 +4,8 @@
     {
         Deposit,
         Withdrawal,
-        Payment,
+        EscrowHold,
+        EscrowRelease,
         Refund
     }
 }

@@ -1,0 +1,17 @@
+﻿@using TadweerHub.PL.Mock
+@{
+    var user = MockSession.User(MockSession.Role(Context));
+}
+<div class="topbar">
+    <div class="input-group" style="max-width:380px">
+        <span class="input-group-text"><i class="bi bi-search"></i></span>
+        <input class="form-control" placeholder="ابحث برقم طلب أو لوط…">
+    </div>
+    <div class="d-flex align-items-center gap-3">
+        <button type="button" class="btn btn-tw-ghost btn-icon position-relative" title="الإشعارات">
+            <i class="bi bi-bell"></i>
+            <span class="position-absolute rounded-circle" style="width:8px;height:8px;background:var(--terra);top:7px;left:8px"></span>
+        </button>
+        <span class="avatar">@user.Initials</span>
+    </div>
+</div>

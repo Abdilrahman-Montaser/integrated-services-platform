@@ -1,0 +1,69 @@
+﻿@model List<OrderRowVM>
+@{
+    ViewData["Title"] = "طلباتي";
+    var inv = CultureInfo.InvariantCulture;
+    var filter = ViewData["Filter"] as string ?? "all";
+
+    bool IsActive(OrderRowVM o) => o.Status is "funded" or "transit";
+    string WeightText(decimal kg) => kg >= 1000
+        ? (kg / 1000).ToString("0.##", inv) + " طن"
+        : kg.ToString("N0", inv) + " كجم";
+
+    var shown = filter switch
+    {
+        "active" => Model.Where(IsActive).ToList(),
+        "completed" => Model.Where(o => o.Status == "completed").ToList(),
+        "disputed" => Model.Where(o => o.Status == "disputed").ToList(),
+        _ => Model
+    };
+}
+
+<section class="container-tw" style="padding-top:40px">
+    <div class="page-head">
+        <div>
+            <h1>طلباتي</h1>
+            <p>تابع طلباتك وأعطِ السائق كود التسليم عند الاستلام.</p>
+        </div>
+        <a asp-controller="Lots" asp-action="Index" class="btn btn-tw-primary">
+            <i class="bi bi-search"></i> تصفّح اللوطات
+        </a>
+    </div>
+
+    <div class="tabs-tw">
+        <a asp-action="Index" class="@(filter == "all" ? "active" : "")">الكل<span class="mono">@Model.Count</span></a>
+        <a asp-action="Index" asp-route-status="active" class="@(filter == "active" ? "active" : "")">نشطة<span class="mono">@Model.Count(IsActive)</span></a>
+        <a asp-action="Index" asp-route-status="completed" class="@(filter == "completed" ? "active" : "")">مكتملة<span class="mono">@Model.Count(o => o.Status == "completed")</span></a>
+        <a asp-action="Index" asp-route-status="disputed" class="@(filter == "disputed" ? "active" : "")">نزاعات<span class="mono">@Model.Count(o => o.Status == "disputed")</span></a>
+    </div>
+
+    @foreach (var o in shown)
+    {
+        <div class="tw-card mb-3">
+            <div class="d-flex align-items-center gap-4 px-4 py-3">
+                <span class="mini-swatch" style="--c:@o.ColorHex;width:70px;height:70px"></span>
+
+                <div style="flex:1.5">
+                    <div class="fw-semibold fs-5">@o.LotName</div>
+                    <div class="fs-13 text-muted-tw">@o.Factory · <span class="mono">@WeightText(o.WeightKg)</span></div>
+                </div>
+
+                <div style="width:130px">
+                    <div class="fs-12 text-faint">رقم الطلب</div>
+                    <div class="mono fs-13">@o.OrderNo</div>
+                </div>
+                <div style="width:110px">
+                    <div class="fs-12 text-faint">التاريخ</div>
+                    <div class="mono fs-13">@o.CreatedAt.ToString("dd/MM/yyyy", inv)</div>
+                </div>
+                <div style="width:110px">
+                    <div class="fs-12 text-faint">السعر</div>
+                    <div><span class="mono fw-semibold">@o.LotPrice.ToString("N0", inv)</span> <span class="cur">ج.م</span></div>
+                </div>
+
+                <div style="width:140px"><partial name="_StatusPill" model="o.Status" /></div>
+
+                <a asp-controller="Orders" asp-action="Details" asp-route-id="@o.Id" class="btn btn-tw-outline btn-sm">عرض</a>
+            </div>
+        </div>
+    }
+</section>

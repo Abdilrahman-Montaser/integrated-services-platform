@@ -1,0 +1,84 @@
+﻿@model WalletIndexVM
+@{
+    ViewData["Title"] = "المحفظة";
+    var inv = CultureInfo.InvariantCulture;
+    var summary = Model.Summary;
+    var txs = Model.Transactions;
+}
+
+<section class="container-tw" style="padding-top:40px">
+
+    <div class="page-head">
+        <div>
+            <h1>المحفظة</h1>
+            <p>إجمالي محفظتك <span class="mono fw-semibold">@summary.Total.ToString("N0", inv)</span> ج.م، منها المتاح والمحجوز في الضمان.</p>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-6">
+            <div class="tw-card stat">
+                <div class="lbl"><i class="bi bi-wallet2"></i> الرصيد المتاح</div>
+                <div>
+                    <span class="val">@summary.Available.ToString("N0", inv)</span>
+                    <span class="unit">ج.م</span>
+                </div>
+                <div class="delta">متاح لشراء لوطات جديدة</div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="tw-card stat">
+                <div class="lbl"><i class="bi bi-shield-lock"></i> المحجوز في الضمان</div>
+                <div>
+                    <span class="val">@summary.Held.ToString("N0", inv)</span>
+                    <span class="unit">ج.م</span>
+                </div>
+                <div class="delta" style="color:var(--blue)">يُحرَّر للمصنع بعد تأكيد التسليم</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tw-card">
+        <div class="tw-card-head">
+            <h3>سجل الحركات</h3>
+            <span class="fs-13 text-muted-tw"><span class="mono">@txs.Count</span> حركة</span>
+        </div>
+
+        @if (!txs.Any())
+        {
+            <div class="p-5 text-center text-muted-tw">لا توجد حركات بعد.</div>
+        }
+        else
+        {
+            <table class="tw-table">
+                <thead>
+                    <tr>
+                        <th>التاريخ</th>
+                        <th>البيان</th>
+                        <th>رقم الطلب</th>
+                        <th>المبلغ</th>
+                        <th>الحالة</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var t in txs)
+                    {
+                        var isIn = t.Amount > 0;
+                        var amountText = (isIn ? "+" : "−") + Math.Abs(t.Amount).ToString("N0", inv);
+                        <tr>
+                            <td class="num fs-13">@t.Date.ToString("dd/MM/yyyy", inv)</td>
+                            <td class="fw-semibold">@t.Description</td>
+                            <td class="num fs-13">@(t.OrderNo ?? "—")</td>
+                            <td>
+                                <span class="num fw-semibold" style="color:@(isIn ? "var(--green)" : "var(--red)")">@amountText</span>
+                                <span class="cur">ج.م</span>
+                            </td>
+                            <td><partial name="_StatusPill" model="t.Status" /></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+</section>

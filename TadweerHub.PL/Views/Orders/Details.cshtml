@@ -1,0 +1,153 @@
+﻿@model OrderDetailsVM
+@{
+    ViewData["Title"] = "تفاصيل الطلب";
+    var inv = CultureInfo.InvariantCulture;
+
+    string StepClass(int n) => Model.Step >= 3 || n < Model.Step ? "done" : n == Model.Step ? "current" : "";
+    var icons = new[] { "bi-wallet2", "bi-truck", "bi-box-seam" };
+    var titles = new[] { "تم الدفع", "في الطريق", "تم التسليم" };
+
+    var started = Model.StartedAt?.ToString("HH:mm", inv) ?? "";
+    var completed = Model.CompletedAt?.ToString("dd/MM · HH:mm", inv) ?? "";
+    var subs = new[]
+    {
+        Model.CreatedAt.ToString("dd/MM · HH:mm", inv),
+        Model.Step >= 2 ? "السائق: " + Model.DriverName + " · " + started : "بانتظار السائق",
+        Model.Step >= 3 ? completed : "بانتظار الكود"
+    };
+
+    var code = Model.DeliveryCode.Length == 6
+        ? Model.DeliveryCode[..3] + " " + Model.DeliveryCode[3..]
+        : Model.DeliveryCode;
+}
+
+<section class="container-tw" style="padding-top:40px">
+
+    <div class="page-head">
+        <div>
+            <h1>تفاصيل الطلب</h1>
+            <a asp-controller="Orders" asp-action="Index"><i class="bi bi-arrow-right"></i> العودة إلى طلباتي</a>
+        </div>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-tw-ghost" onclick="window.print()"><i class="bi bi-printer"></i> طباعة</button>
+            <button type="button" class="btn btn-tw-danger"><i class="bi bi-flag"></i> فتح نزاع</button>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        @* العمود الجانبي: الختم + التنبيه + تذكرة الميزان (على الشمال) *@
+        <div class="col-4 order-2">
+            <div class="stamp mb-3">
+                <div class="cap">كود التسليم · DELIVERY CODE</div>
+                <div class="code">@code</div>
+                <div class="fw-semibold">أعطِ هذا الكود للسائق عند الاستلام</div>
+            </div>
+
+            <div class="note mb-3" style="background:var(--red-bg);border-color:#D9A79C;color:var(--red)">
+                <i class="bi bi-exclamation-diamond-fill" style="color:var(--red)"></i>
+                <div>لا تشارك الكود قبل فحص اللوط ومطابقة الوزن. إدخال السائق للكود يحرّر المبلغ للمصنع فورًا.</div>
+            </div>
+
+            @if (Model.WeighedKg != null)
+            {
+                <div class="tw-card">
+                    <div class="tw-card-head">
+                        <h3>تذكرة الميزان</h3>
+                        <span class="pill pill-completed"><i></i>مرفوعة</span>
+                    </div>
+                    <div class="tw-card-pad">
+                        <div class="ph light" style="--c:#EFE8D9;height:170px">
+                            <span class="ph-label">صورة تذكرة الميزان من السائق</span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @* الإيصال (على اليمين) *@
+        <div class="col-8 order-1">
+            <div class="receipt">
+
+                <div class="d-flex justify-content-between align-items-end">
+                    <div>
+                        <div class="eyebrow mb-1">ORDER TICKET · تذكرة طلب</div>
+                        <div class="ticket-no">@Model.OrderNo</div>
+                    </div>
+                    <div>
+                        <div class="eyebrow mb-1">DATE</div>
+                        <div class="mono fs-5">@Model.CreatedAt.ToString("dd/MM/yyyy · HH:mm", inv)</div>
+                    </div>
+                </div>
+
+                <div class="rule"></div>
+
+                <div class="tl">
+                    @for (var i = 0; i < 3; i++)
+                    {
+                        var cls = StepClass(i + 1);
+                        <div class="tl-step @cls">
+                            <div class="dot">
+                                @if (cls == "done")
+                                {
+                                    <i class="bi bi-check-lg"></i>
+                                }
+                                else if (cls == "current")
+                                {
+
+                                    <i class="bi @icons[i]"></i>
+                                }
+                                else
+                                {
+
+                                    @(i + 1)
+                                }
+                            </div>
+                            <div class="t">@titles[i]</div>
+                            <div class="s">@subs[i]</div>
+                        </div>
+                    }
+                </div>
+
+                <div class="rule"></div>
+
+                <div class="row g-5">
+                    <div class="col-6">
+                        <div class="eyebrow mb-2">LOT · اللوط</div>
+                        <div class="r-row"><span class="k">الخامة</span><span class="dots"></span><span class="v">@Model.Material</span></div>
+                        <div class="r-row"><span class="k">رقم اللوط</span><span class="dots"></span><span class="v mono">@Model.LotCode</span></div>
+                        <div class="r-row"><span class="k">الوزن المعلن</span><span class="dots"></span><span class="v mono">@Model.WeightKg.ToString("N0", inv) kg</span></div>
+                        <div class="r-row"><span class="k">وزن الميزان</span><span class="dots"></span><span class="v mono">@(Model.WeighedKg?.ToString("N0", inv) ?? "—") kg</span></div>
+                        <div class="r-row"><span class="k">عدد الرولات</span><span class="dots"></span><span class="v mono">@Model.RollsCount</span></div>
+                    </div>
+                    <div class="col-6">
+                        <div class="eyebrow mb-2">ROUTE · المسار</div>
+                        <div class="r-row"><span class="k">البائع</span><span class="dots"></span><span class="v">@Model.Factory</span></div>
+                        <div class="r-row"><span class="k">من</span><span class="dots"></span><span class="v">@Model.FromAddress</span></div>
+                        <div class="r-row"><span class="k">إلى</span><span class="dots"></span><span class="v">@Model.ToAddress</span></div>
+                        <div class="r-row"><span class="k">المركبة</span><span class="dots"></span><span class="v">@Model.VehiclePlate</span></div>
+                        <div class="r-row"><span class="k">السائق</span><span class="dots"></span><span class="v mono">@Model.DriverPhone</span></div>
+                    </div>
+                </div>
+
+                <div class="rule"></div>
+
+                <div class="eyebrow mb-2">PAYMENT · الدفع</div>
+                <div class="r-row"><span class="k">سعر اللوط</span><span class="dots"></span><span class="v mono">@Model.LotPrice.ToString("N2", inv)</span></div>
+                <div class="r-row"><span class="k">رسوم المنصة ٢٪</span><span class="dots"></span><span class="v mono">@Model.PlatformCommission.ToString("N2", inv)</span></div>
+                <div class="r-row"><span class="k">التوصيل</span><span class="dots"></span><span class="v mono">@Model.DeliveryFee.ToString("N2", inv)</span></div>
+
+                <div class="rule-dbl"></div>
+                <div class="r-row total">
+                    <span class="k">الإجمالي المحجوز</span><span class="dots"></span>
+                    <span class="v mono">@Model.Total.ToString("N2", inv) EGP</span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <div class="mono text-faint" style="letter-spacing:.2em">|||| ||| |||| || ||||| |||</div>
+                    <div class="eyebrow">TADWEER HUB · ESCROW #@Model.EscrowNo</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,182 @@
+﻿@using TadweerHub.PL.ViewModels.Account
+@model RegisterVM
+@{
+    ViewData["Title"] = "إنشاء حساب جديد";
+    var governorates = new[] { "القاهرة", "الجيزة", "الإسكندرية", "الغربية", "الشرقية", "القليوبية", "الدقهلية", "بورسعيد" };
+}
+
+<div class="container-tw py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="tw-card tw-card-pad">
+                <div class="mb-4">
+                    <span class="eyebrow">NEW ACCOUNT · KYC</span>
+                    <h1 class="h3 mt-1 mb-1">إنشاء حساب على تدوير هب</h1>
+                    <p class="text-muted-tw fs-13 mb-0">اختر نشاطك وارفع المستندات المطلوبة لتوثيق الحساب من الإدارة.</p>
+                </div>
+
+                <form asp-controller="Account" asp-action="Register" method="post" enctype="multipart/form-data">
+                    <input type="hidden" asp-for="Role" id="roleInput" />
+
+                    <!-- 1. اختيار الدور -->
+                    <label class="form-label">١. اختر نوع الحساب</label>
+                    <div class="row g-3 mb-4" id="roleCards">
+                        <div class="col-md-4">
+                            <div class="tw-card tw-card-pad position-relative select-card @(Model.Role == "workshop" ? "selected" : "")" data-role="workshop">
+                                <span class="chk"><i class="bi bi-check-lg"></i></span>
+                                <i class="bi bi-scissors fs-4" style="color:var(--green)"></i>
+                                <div class="fw-bold mt-2">ورشة / مشغل</div>
+                                <div class="fs-12 text-muted-tw">شراء بواقي الأقمشة واللوطات بمحفظة ضمان</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="tw-card tw-card-pad position-relative select-card @(Model.Role == "factory" ? "selected" : "")" data-role="factory">
+                                <span class="chk"><i class="bi bi-check-lg"></i></span>
+                                <i class="bi bi-buildings fs-4" style="color:var(--green)"></i>
+                                <div class="fw-bold mt-2">مصنع نسيج / ملابس</div>
+                                <div class="fs-12 text-muted-tw">عرض الفائض والهوالك للبيع للورش</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="tw-card tw-card-pad position-relative select-card @(Model.Role == "driver" ? "selected" : "")" data-role="driver">
+                                <span class="chk"><i class="bi bi-check-lg"></i></span>
+                                <i class="bi bi-truck fs-4" style="color:var(--green)"></i>
+                                <div class="fw-bold mt-2">سائق نقل</div>
+                                <div class="fs-12 text-muted-tw">استلام الشحنات وتوصيلها بكود التأكيد</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. البيانات الأساسية -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="FullName" class="form-label">الاسم بالكامل (المسؤول)</label>
+                            <input asp-for="FullName" class="form-control" placeholder="مثال: أحمد محمود" />
+                            <span asp-validation-for="FullName" class="text-danger fs-12"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Phone" class="form-label">رقم الموبايل</label>
+                            <input asp-for="Phone" class="form-control" placeholder="010xxxxxxxx" dir="ltr" />
+                            <span asp-validation-for="Phone" class="text-danger fs-12"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label">البريد الإلكتروني</label>
+                            <input asp-for="Email" class="form-control" placeholder="name@domain.com" dir="ltr" />
+                            <span asp-validation-for="Email" class="text-danger fs-12"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Password" class="form-label">كلمة المرور</label>
+                            <input asp-for="Password" class="form-control" placeholder="٦ أحرف على الأقل" dir="ltr" />
+                            <span asp-validation-for="Password" class="text-danger fs-12"></span>
+                        </div>
+                    </div>
+
+                    <!-- 3. بيانات النشاط / المركبة -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label asp-for="Governorate" class="form-label">المحافظة</label>
+                            <select asp-for="Governorate" class="form-select">
+                                @foreach (var g in governorates)
+                                {
+                                    <option value="@g">@g</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-8" id="businessFields">
+                            <label asp-for="EntityName" class="form-label" id="entityLabel">اسم الورشة</label>
+                            <input asp-for="EntityName" class="form-control" placeholder="اكتب الاسم الرسمي للنشاط" />
+                        </div>
+
+                        <div class="col-12" id="addressField">
+                            <label asp-for="Address" class="form-label">العنوان التفصيلي</label>
+                            <input asp-for="Address" class="form-control" placeholder="المنطقة الصناعية / الشارع / أقرب علامة مميزة" />
+                        </div>
+
+                        <div class="col-md-4 d-none" id="vehicleField">
+                            <label asp-for="VehicleType" class="form-label">نوع المركبة</label>
+                            <select asp-for="VehicleType" class="form-select">
+                                <option value="ربع نقل">ربع نقل</option>
+                                <option value="نصف نقل (جامبو)">نصف نقل (جامبو)</option>
+                                <option value="فان مغلق">فان مغلق</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4 d-none" id="plateField">
+                            <label asp-for="PlateNumber" class="form-label">رقم اللوحة المعدنية</label>
+                            <input asp-for="PlateNumber" class="form-control" placeholder="أ ب ج ١٢٣٤" />
+                        </div>
+                    </div>
+
+                    <!-- 4. المستندات المطلوبة للتوثيق -->
+                    <label class="form-label">٢. المستندات المطلوبة للمراجعة</label>
+                    <div class="row g-3 mb-4" id="docsRow">
+                        <div class="col-md-6">
+                            <label class="upload w-100">
+                                <input type="file" name="Doc1" class="d-none" onchange="this.parentElement.classList.add('done')" />
+                                <i class="bi bi-file-earmark-arrow-up"></i>
+                                <b id="doc1Title">بطاقة الرقم القومي</b>
+                                <span class="fs-12">PDF أو صورة واضحة (حد أقصى 5MB)</span>
+                            </label>
+                        </div>
+                        <div class="col-md-6 d-none" id="doc2Col">
+                            <label class="upload w-100">
+                                <input type="file" name="Doc2" class="d-none" onchange="this.parentElement.classList.add('done')" />
+                                <i class="bi bi-file-earmark-check"></i>
+                                <b id="doc2Title">البطاقة الضريبية</b>
+                                <span class="fs-12">مطلوبة لتفعيل حساب المصنع / السائق</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="note mb-4">
+                        <i class="bi bi-shield-check"></i>
+                        <div>تتم مراجعة المستندات خلال <span class="mono fw-semibold">6</span> ساعات عمل لتفعيل الحساب وضمان جدية التعاملات على المنصة.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-tw-primary btn-lg w-100">
+                        <i class="bi bi-person-plus"></i> إرسال طلب التسجيل
+                    </button>
+                </form>
+
+                <div class="rule"></div>
+
+                <div class="text-center fs-14">
+                    عندك حساب بالفعل؟
+                    <a asp-controller="Account" asp-action="Login" class="fw-semibold">تسجيل الدخول</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const roleInput = document.getElementById('roleInput');
+        const cards = document.querySelectorAll('#roleCards .select-card');
+
+        function applyRole(role) {
+            roleInput.value = role;
+            cards.forEach(c => c.classList.toggle('selected', c.dataset.role === role));
+
+            const isDriver = role === 'driver';
+            const isFactory = role === 'factory';
+
+            document.getElementById('businessFields').classList.toggle('d-none', isDriver);
+            document.getElementById('addressField').classList.toggle('d-none', isDriver);
+            document.getElementById('vehicleField').classList.toggle('d-none', !isDriver);
+            document.getElementById('plateField').classList.toggle('d-none', !isDriver);
+
+            document.getElementById('entityLabel').textContent = isFactory ? 'اسم المصنع / الشركة' : 'اسم الورشة';
+            document.getElementById('doc1Title').textContent = isFactory ? 'السجل التجاري' : isDriver ? 'رخصة القيادة' : 'بطاقة الرقم القومي';
+
+            const doc2Col = document.getElementById('doc2Col');
+            doc2Col.classList.toggle('d-none', role === 'workshop');
+            document.getElementById('doc2Title').textContent = isFactory ? 'البطاقة الضريبية' : 'رخصة المركبة';
+        }
+
+        cards.forEach(c => c.addEventListener('click', () => applyRole(c.dataset.role)));
+        applyRole(roleInput.value || 'workshop');
+    </script>
+}

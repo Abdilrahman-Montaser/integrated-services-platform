@@ -1,0 +1,167 @@
+@model TadweerHub.PL.ViewModels.LotsIndexVM
+@{
+    ViewData["Title"] = "تصفّح اللوطات";
+    var f = Model.Filter;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/lots.css" asp-append-version="true" />
+}
+
+<div class="container lots-page py-4">
+
+    <!-- ───── العنوان + البحث + الترتيب ───── -->
+    <div class="lots-head">
+        <div>
+            <h1 class="lots-title">تصفّح اللوطات</h1>
+            <p class="lots-sub">@Model.Total لوط متاح من @Model.FactoriesCount مصنعًا موثّقًا</p>
+        </div>
+
+        <form method="get" class="lots-search" id="searchForm">
+            @* بنحافظ على باقي الفلاتر وقت البحث *@
+            @foreach (var m in f.Materials) { <input type="hidden" name="materials" value="@m" /> }
+            <input type="hidden" name="minKg" value="@f.MinKg" />
+            <input type="hidden" name="maxKg" value="@f.MaxKg" />
+            <input type="hidden" name="gov" value="@f.Gov" />
+            <input type="hidden" name="minPrice" value="@f.MinPrice" />
+            <input type="hidden" name="maxPrice" value="@f.MaxPrice" />
+
+            <select name="sort" class="form-select lots-sort" onchange="this.form.submit()" aria-label="الترتيب">
+                <option value="newest" selected="@(f.Sort == "newest")">الأحدث أولًا</option>
+                <option value="price_asc" selected="@(f.Sort == "price_asc")">السعر: الأقل أولًا</option>
+                <option value="price_desc" selected="@(f.Sort == "price_desc")">السعر: الأعلى أولًا</option>
+                <option value="weight" selected="@(f.Sort == "weight")">الأكبر وزنًا</option>
+            </select>
+
+            <div class="input-group lots-q">
+                <input type="search" name="q" value="@f.Q" class="form-control" placeholder="ابحث عن خامة أو مصنع" />
+                <button class="btn" type="submit" aria-label="بحث"><i class="bi bi-search"></i></button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ───── الفلاتر النشطة ───── -->
+    @if (Model.Chips.Any())
+    {
+        <div class="lots-chips">
+            @foreach (var c in Model.Chips)
+            {
+                <a class="lot-chip" href="@Url.Action("Index")@c.RemoveQuery" title="إزالة الفلتر">
+                    @c.Label <span aria-hidden="true">×</span>
+                </a>
+            }
+        </div>
+    }
+
+    <div class="row g-4 flex-lg-row">
+
+        <!-- ───── Sidebar الفلتر (يمين في RTL) ───── -->
+        <aside class="col-lg-3 order-lg-first">
+            <form method="get" class="lots-filter" id="filterForm">
+                <input type="hidden" name="q" value="@f.Q" />
+                <input type="hidden" name="sort" value="@f.Sort" />
+
+                <div class="lots-filter-head">
+                    <span><i class="bi bi-funnel"></i> الفلاتر</span>
+                    <a href="@Url.Action("Index")" class="small">مسح الكل</a>
+                </div>
+
+                <div class="lots-filter-group">
+                    <h6>نوع الخامة</h6>
+                    @foreach (var m in Model.Materials)
+                    {
+                        <label class="lots-check">
+                            <input type="checkbox" name="materials" value="@m.Value" checked="@m.Checked" />
+                            <span>@m.Label</span>
+                            <small class="count">@m.Count</small>
+                        </label>
+                    }
+                </div>
+
+                <div class="lots-filter-group">
+                    <h6>الوزن</h6>
+                    <div class="lots-range">
+                        <div class="input-group input-group-sm">
+                            <input type="number" min="0" name="minKg" id="minKg" value="@f.MinKg" class="form-control" placeholder="من" />
+                            <span class="input-group-text">كجم</span>
+                        </div>
+                        <div class="input-group input-group-sm">
+                            <input type="number" min="0" name="maxKg" id="maxKg" value="@f.MaxKg" class="form-control" placeholder="إلى" />
+                            <span class="input-group-text">كجم</span>
+                        </div>
+                    </div>
+                    <div class="lots-quick">
+                        <button type="button" class="lot-pill" data-min="" data-max="1000">أقل من 1 طن</button>
+                        <button type="button" class="lot-pill" data-min="1000" data-max="5000">1-5 طن</button>
+                        <button type="button" class="lot-pill" data-min="5000" data-max="">أكثر من 5 طن</button>
+                    </div>
+                </div>
+
+                <div class="lots-filter-group">
+                    <h6>المحافظة</h6>
+                    <select name="gov" class="form-select form-select-sm">
+                        <option value="">كل المحافظات</option>
+                        @foreach (var g in Model.Governorates)
+                        {
+                            <option value="@g" selected="@(f.Gov == g)">@g</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="lots-filter-group">
+                    <h6>نطاق السعر (ج.م)</h6>
+                    <div class="lots-range">
+                        <input type="number" min="0" name="minPrice" value="@f.MinPrice" class="form-control form-control-sm" placeholder="من" />
+                        <input type="number" min="0" name="maxPrice" value="@f.MaxPrice" class="form-control form-control-sm" placeholder="إلى" />
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-tadweer w-100">تطبيق الفلتر</button>
+            </form>
+        </aside>
+
+        <!-- ───── الكروت ───── -->
+        <section class="col-lg-9">
+            @if (Model.Items.Any())
+            {
+                <div class="row g-3 row-cols-1 row-cols-sm-2 row-cols-xl-3">
+                    @foreach (var lot in Model.Items)
+                    {
+                        <div class="col"><partial name="_LotCard" model="lot" /></div>
+                    }
+                </div>
+
+                @if (Model.Pages > 1)
+                {
+                    <nav class="lots-pager" aria-label="الصفحات">
+                        @if (Model.Page > 1)
+                        {
+                            <a href="@Url.Action("Index")@f.ToQueryString(Model.Page - 1)" aria-label="السابق">›</a>
+                        }
+                        @for (var p = 1; p <= Model.Pages; p++)
+                        {
+                            <a href="@Url.Action("Index")@f.ToQueryString(p)" class="@(p == Model.Page ? "active" : "")">@p</a>
+                        }
+                        @if (Model.Page < Model.Pages)
+                        {
+                            <a href="@Url.Action("Index")@f.ToQueryString(Model.Page + 1)" aria-label="التالي">‹</a>
+                        }
+                    </nav>
+                }
+            }
+            else
+            {
+                <div class="lots-empty">
+                    <i class="bi bi-inbox"></i>
+                    <h5>مفيش لوطات مطابقة للفلتر</h5>
+                    <p>جرّب توسّع نطاق الوزن أو السعر، أو امسح الفلاتر.</p>
+                    <a href="@Url.Action("Index")" class="btn btn-tadweer">مسح الفلاتر</a>
+                </div>
+            }
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/lots.js" asp-append-version="true"></script>
+}

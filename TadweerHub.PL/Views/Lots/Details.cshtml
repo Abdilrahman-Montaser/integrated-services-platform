@@ -1,0 +1,126 @@
+@model TadweerHub.PL.ViewModels.LotDetailsVM
+@{
+    var lot = Model.Lot;
+    ViewData["Title"] = lot.Name;
+    var tons = lot.WeightKg / 1000m;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/lots.css" asp-append-version="true" />
+}
+
+<div class="container lots-page py-4">
+
+    <!-- ───── Breadcrumb ───── -->
+    <nav class="lot-crumbs" aria-label="مسار التصفح">
+        <a asp-action="Index">تصفّح اللوطات</a>
+        <i class="bi bi-chevron-left"></i>
+        <a asp-action="Index" asp-route-materials="@lot.Material">@Model.MaterialLabel</a>
+        <i class="bi bi-chevron-left"></i>
+        <span class="mono">@lot.Code</span>
+    </nav>
+
+    <div class="row g-4">
+
+        <!-- ───── المعرض + المواصفات ───── -->
+        <div class="col-lg-7 order-lg-1">
+            <div class="lot-gallery-main" id="galleryMain" style="background:@lot.ColorHex">
+                <span class="gallery-count"><span id="galleryIdx">1</span> / @(Model.Gallery.Count + 1)</span>
+                <span class="gallery-caption" id="galleryCaption">صورة رئيسية: @Model.Gallery[0].Caption</span>
+            </div>
+
+            <div class="lot-gallery-thumbs">
+                @for (var i = 0; i < Model.Gallery.Count; i++)
+                {
+                    var g = Model.Gallery[i];
+                    <button type="button" class="thumb @(i == 0 ? "active" : "")"
+                            data-hex="@g.Hex" data-caption="@g.Caption" data-idx="@(i + 1)"
+                            style="background:@g.Hex; --o:@g.Opacity.ToString(System.Globalization.CultureInfo.InvariantCulture)">
+                        <span>@g.Caption</span>
+                    </button>
+                }
+            </div>
+
+            <div class="lot-specs">
+                <div class="lot-specs-head">
+                    <h2>المواصفات</h2>
+                    <span class="mono">@lot.Code</span>
+                </div>
+                <dl>
+                    <div><dt>نوع الخامة</dt><dd>@Model.MaterialLabel</dd></div>
+                    <div><dt>الحالة</dt><dd>@lot.Condition</dd></div>
+                    <div>
+                        <dt>اللون</dt>
+                        <dd><span class="dot" style="background:@lot.ColorHex"></span> @lot.ColorName</dd>
+                    </div>
+                    <div>
+                        <dt>الوزن</dt>
+                        <dd><span class="mono">@lot.WeightKg.ToString("N0")</span> كجم
+                            <small class="text-muted">(@tons.ToString("0.##") طن · ميزان معتمد)</small></dd>
+                    </div>
+                    <div>
+                        <dt>عدد الرولات</dt>
+                        <dd>@(lot.RollsCount > 0 ? $"{lot.RollsCount} رول" : "غير محدد")</dd>
+                    </div>
+                    <div><dt>المحافظة</dt><dd>@lot.Governorate</dd></div>
+                </dl>
+            </div>
+
+            <div class="lot-desc">
+                <h2>الوصف</h2>
+                <p>@Model.Description</p>
+            </div>
+        </div>
+
+        <!-- ───── العنوان + كارت السعر ───── -->
+        <div class="col-lg-5 order-lg-2">
+            <div class="lot-material">@Model.MaterialLabel</div>
+            <h1 class="lot-title">@lot.Name</h1>
+
+            <div class="lot-seller">
+                <span class="avatar"><i class="bi bi-building"></i></span>
+                <strong>@lot.Factory</strong>
+                @if (Model.FactoryVerified)
+                {
+                    <span class="verified"><i class="bi bi-patch-check-fill"></i> موثَّق</span>
+                }
+                <small class="text-muted">· @Model.FactoryDeals صفقة</small>
+            </div>
+
+            <div class="lot-pricebox">
+                <small class="mono label">TOTAL PRICE</small>
+                <div class="big">
+                    <span class="mono">@lot.Price.ToString("N0")</span> <span class="cur">ج.م</span>
+                </div>
+                <small class="text-muted">≈ @Model.PricePerKg.ToString("N0") ج.م / كجم</small>
+
+                <ul class="lot-lines">
+                    <li><span>سعر اللوط</span><b class="mono">@lot.Price.ToString("N2")</b></li>
+                    <li><span>رسوم المنصة (٢٪)</span><b class="mono">@Model.PlatformFee.ToString("N2")</b></li>
+                    <li><span>التوصيل (تقديري)</span><b class="mono">@Model.Delivery.ToString("N2")</b></li>
+                </ul>
+
+                <div class="lot-total">
+                    <span>الإجمالي</span>
+                    <b class="mono">@Model.Total.ToString("N2")</b>
+                </div>
+
+                @* ⚠️ الربط بصفحة الطلب بتاع زميلك — لحد ما تجهز خليه "#" *@
+                <a href="#" class="btn btn-buy w-100">اشترِ الآن <i class="bi bi-arrow-left"></i></a>
+                <button type="button" class="btn btn-link w-100 text-dark">
+                    <i class="bi bi-bookmark"></i> حفظ للمقارنة
+                </button>
+            </div>
+
+            <div class="lot-escrow">
+                <i class="bi bi-shield-check"></i>
+                <p><b>دفعك محجوز بأمان.</b> لن يصل المبلغ للمصنع إلا بعد استلامك اللوط
+                   وإعطاء السائق كود التسليم. يمكنك فتح نزاع خلال 48 ساعة.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/lots.js" asp-append-version="true"></script>
+}

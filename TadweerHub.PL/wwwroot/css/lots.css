@@ -1,0 +1,120 @@
+/* ===== Lots pages (Index + Details) — scoped under .lots-page ===== */
+.lots-page {
+  --lt-bg: #FBF8F1;
+  --lt-card: #FFFDF8;
+  --lt-line: #E4DDCB;
+  --lt-ink: #1F2A24;
+  --lt-muted: #7A7F76;
+  --lt-green: #2F5D3A;
+  --lt-green-soft: #DDEBDD;
+  --lt-orange: #D9673A;
+  color: var(--lt-ink);
+  font-family: "IBM Plex Sans Arabic", system-ui, sans-serif;
+}
+.lots-page .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; direction: ltr; unicode-bidi: isolate; }
+
+/* ---------- Header ---------- */
+.lots-head { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: flex-end; margin-bottom: 1.25rem; }
+.lots-title { font-size: 2rem; font-weight: 700; margin: 0; }
+.lots-sub { color: var(--lt-muted); margin: .25rem 0 0; font-size: .9rem; }
+.lots-search { display: flex; gap: .5rem; flex-wrap: wrap; }
+.lots-sort { width: 10.5rem; border-radius: 10px; background-color: var(--lt-card); border-color: var(--lt-line); }
+.lots-q { width: 17rem; }
+.lots-q .form-control, .lots-q .btn { background: var(--lt-card); border-color: var(--lt-line); }
+.lots-q .form-control { border-radius: 0 10px 10px 0; }
+.lots-q .btn { border-radius: 10px 0 0 10px; color: var(--lt-muted); }
+
+/* ---------- Chips ---------- */
+.lots-chips { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; }
+.lot-chip { font-size: .8rem; padding: .25rem .75rem; border: 1px solid var(--lt-line); border-radius: 999px; background: var(--lt-card); color: var(--lt-ink); text-decoration: none; }
+.lot-chip:hover { border-color: var(--lt-green); }
+
+/* ---------- Filter sidebar ---------- */
+.lots-filter { background: var(--lt-card); border: 1px solid var(--lt-line); border-radius: 14px; padding: 1.25rem; position: sticky; top: 1rem; }
+.lots-filter-head { display: flex; justify-content: space-between; align-items: center; font-weight: 700; margin-bottom: 1rem; }
+.lots-filter-head a { color: var(--lt-muted); }
+.lots-filter-group { margin-bottom: 1.25rem; }
+.lots-filter-group h6 { font-size: .85rem; font-weight: 700; margin-bottom: .6rem; }
+.lots-check { display: flex; align-items: center; gap: .5rem; margin-bottom: .4rem; cursor: pointer; font-size: .9rem; }
+.lots-check input { accent-color: var(--lt-green); width: 1rem; height: 1rem; }
+.lots-check .count { margin-inline-start: auto; color: var(--lt-muted); font-size: .75rem; }
+.lots-range { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+.lots-quick { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .6rem; }
+.lot-pill { font-size: .75rem; padding: .2rem .65rem; border-radius: 999px; border: 1px solid var(--lt-line); background: transparent; }
+.lot-pill:hover, .lot-pill.active { border-color: var(--lt-green); background: var(--lt-green-soft); }
+.btn-tadweer { background: var(--lt-green); color: #fff; border-radius: 10px; font-weight: 600; }
+.btn-tadweer:hover { background: #264c2f; color: #fff; }
+
+/* ---------- Card ---------- */
+.lot-card { background: var(--lt-card); border: 1px solid var(--lt-line); border-radius: 14px; overflow: hidden; height: 100%; display: flex; flex-direction: column; }
+.lot-swatch { height: 7rem; position: relative; margin: .5rem .5rem 0; border-radius: 10px; border: 1px dashed rgba(255,255,255,.45); }
+.lot-swatch.is-light { border-color: rgba(0,0,0,.2); }
+.lot-code { position: absolute; top: .6rem; inset-inline-start: .6rem; background: #fff; color: var(--lt-ink); font: 500 .7rem "IBM Plex Mono", monospace; padding: .15rem .5rem; border-radius: 4px; direction: ltr; }
+.lot-body { padding: .9rem 1rem 1rem; display: flex; flex-direction: column; gap: .35rem; flex: 1; }
+.lot-material { font-size: .75rem; color: var(--lt-muted); }
+.lot-name { font-size: 1.05rem; font-weight: 700; margin: 0; }
+.lot-meta { display: flex; gap: 1rem; font-size: .78rem; color: var(--lt-muted); }
+.lot-factory { font-size: .8rem; display: flex; align-items: center; gap: .3rem; padding-bottom: .6rem; border-bottom: 1px dashed var(--lt-line); }
+.lot-factory .bi-patch-check-fill { color: var(--lt-green); }
+.lot-foot { display: flex; justify-content: space-between; align-items: flex-end; margin-top: auto; padding-top: .4rem; }
+.lot-price small { display: block; font-size: .7rem; color: var(--lt-muted); }
+.lot-price strong { font: 600 1.25rem "IBM Plex Mono", monospace; }
+.lot-price strong span { font: 500 .75rem "IBM Plex Sans Arabic"; }
+.lot-btn { background: #E8E0CE; border-radius: 8px; font-size: .78rem; font-weight: 600; }
+.lot-btn:hover { background: #DDD3BB; }
+
+/* ---------- Pager + empty ---------- */
+.lots-pager { display: flex; justify-content: center; gap: .35rem; margin-top: 1.5rem; }
+.lots-pager a { min-width: 2rem; height: 2rem; display: grid; place-items: center; border-radius: 8px; text-decoration: none; color: var(--lt-ink); font-size: .85rem; }
+.lots-pager a:hover { background: var(--lt-green-soft); }
+.lots-pager a.active { background: var(--lt-green); color: #fff; }
+.lots-empty { text-align: center; padding: 4rem 1rem; color: var(--lt-muted); }
+.lots-empty .bi { font-size: 2.5rem; }
+
+/* ---------- Details ---------- */
+.lot-crumbs { display: flex; gap: .5rem; align-items: center; font-size: .8rem; margin-bottom: 1.25rem; color: var(--lt-muted); }
+.lot-crumbs a { color: var(--lt-green); }
+.lot-title { font-size: 1.9rem; font-weight: 700; margin: .15rem 0 .75rem; }
+.lot-seller { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.lot-seller .avatar { width: 2rem; height: 2rem; border-radius: 50%; background: #E8E0CE; display: grid; place-items: center; }
+.lot-seller .verified { background: var(--lt-green-soft); color: var(--lt-green); font-size: .72rem; padding: .1rem .5rem; border-radius: 999px; }
+
+.lot-pricebox { background: var(--lt-card); border: 1px solid var(--lt-line); border-radius: 14px; padding: 1.25rem; }
+.lot-pricebox .label { color: var(--lt-muted); font-size: .7rem; letter-spacing: .08em; }
+.lot-pricebox .big { font-size: 3rem; font-weight: 700; line-height: 1.1; }
+.lot-pricebox .big .cur { font: 500 1rem "IBM Plex Sans Arabic"; color: var(--lt-muted); }
+.lot-lines { list-style: none; padding: 1rem 0; margin: 1rem 0 0; border-top: 1px dashed var(--lt-line); }
+.lot-lines li, .lot-total { display: flex; align-items: baseline; gap: .5rem; font-size: .85rem; margin-bottom: .5rem; }
+.lot-lines li::after, .lot-total::after { content: ""; order: 2; flex: 1; border-bottom: 1px dotted var(--lt-line); }
+.lot-lines li b, .lot-total b { order: 3; }
+.lot-lines li span, .lot-total span { order: 1; }
+.lot-total { border-top: 2px solid var(--lt-ink); padding-top: 1rem; margin-bottom: 1rem; font-weight: 700; font-size: 1rem; }
+.btn-buy { background: var(--lt-orange); color: #fff; font-weight: 700; padding: .75rem; border-radius: 10px; }
+.btn-buy:hover { background: #c4592f; color: #fff; }
+.lot-escrow { display: flex; gap: .75rem; background: var(--lt-green-soft); border: 1px solid #B9D6BB; border-radius: 12px; padding: .9rem 1rem; margin-top: 1rem; font-size: .8rem; }
+.lot-escrow p { margin: 0; }
+.lot-escrow .bi { color: var(--lt-green); font-size: 1.1rem; }
+
+/* gallery */
+.lot-gallery-main { aspect-ratio: 16 / 10; border-radius: 14px; position: relative; border: 1px dashed rgba(255,255,255,.5); transition: background .2s; }
+.gallery-count { position: absolute; top: .9rem; inset-inline-start: .9rem; background: #fff; font: 500 .72rem "IBM Plex Mono", monospace; padding: .15rem .5rem; border-radius: 4px; direction: ltr; }
+.gallery-caption { position: absolute; bottom: .8rem; inset-inline-end: 1rem; color: #fff; font: .72rem "IBM Plex Mono", monospace; opacity: .85; }
+.lot-gallery-thumbs { display: grid; grid-template-columns: repeat(4, 1fr); gap: .6rem; margin: .75rem 0 1.25rem; }
+.thumb { aspect-ratio: 16 / 10; border-radius: 10px; border: 2px solid transparent; position: relative; padding: 0; opacity: var(--o, 1); }
+.thumb span { position: absolute; bottom: .3rem; inset-inline-end: .4rem; font-size: .62rem; color: #fff; mix-blend-mode: difference; }
+.thumb.active { border-color: var(--lt-orange); }
+
+/* specs */
+.lot-specs { background: var(--lt-card); border: 1px solid var(--lt-line); border-radius: 14px; overflow: hidden; }
+.lot-specs-head { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; }
+.lot-specs-head h2, .lot-desc h2 { font-size: 1.1rem; font-weight: 700; margin: 0; }
+.lot-specs-head .mono { color: var(--lt-muted); font-size: .75rem; }
+.lot-specs dl { margin: 0; }
+.lot-specs dl > div { display: flex; border-top: 1px solid var(--lt-line); padding: .8rem 1.25rem; font-size: .88rem; }
+.lot-specs dt { width: 9rem; font-weight: 400; color: var(--lt-muted); }
+.lot-specs dd { margin: 0; font-weight: 600; }
+.lot-specs .dot { display: inline-block; width: .6rem; height: .6rem; border-radius: 2px; margin-inline-end: .35rem; }
+.lot-desc { margin-top: 1.25rem; }
+.lot-desc p { color: #4a514b; font-size: .9rem; line-height: 1.9; margin-top: .5rem; max-width: 65ch; }
+
+@media (max-width: 991.98px) { .lots-filter { position: static; } .lots-q { width: 100%; } .lots-sort { width: 100%; } .lots-search { width: 100%; } }

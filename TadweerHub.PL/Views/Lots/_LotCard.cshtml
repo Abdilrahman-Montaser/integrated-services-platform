@@ -1,0 +1,36 @@
+@model LotCardVM
+@* ⚠️ لو LotCardVM في namespace مختلف أضف @using فوق، أو ضيفه في Views/_ViewImports.cshtml *@
+@{
+    var weight = Model.WeightKg >= 1000
+        ? $"{(Model.WeightKg / 1000m):0.##} طن"
+        : $"{Model.WeightKg:0.##} كجم";
+}
+
+<article class="lot-card">
+    <div class="lot-swatch @(Model.IsLight ? "is-light" : "")" style="background:@Model.ColorHex">
+        <span class="lot-code">@Model.Code</span>
+    </div>
+
+    <div class="lot-body">
+        <div class="lot-material">@Model.Material</div>
+        <h3 class="lot-name">@Model.Name</h3>
+
+        <div class="lot-meta">
+            <span><i class="bi bi-box-seam"></i> @weight</span>
+            <span><i class="bi bi-geo-alt"></i> @Model.Governorate</span>
+        </div>
+
+        <div class="lot-factory">
+            <i class="bi bi-patch-check-fill"></i>
+            <i class="bi bi-building"></i> @Model.Factory
+        </div>
+
+        <div class="lot-foot">
+            <div class="lot-price">
+                <small>السعر الإجمالي</small>
+                <strong>@Model.Price.ToString("N0") <span>ج.م</span></strong>
+            </div>
+            <a class="btn btn-sm lot-btn" asp-controller="Lots" asp-action="Details" asp-route-code="@Model.Code">عرض التفاصيل</a>
+        </div>
+    </div>
+</article>

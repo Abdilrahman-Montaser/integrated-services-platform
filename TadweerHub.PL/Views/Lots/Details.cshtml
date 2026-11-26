@@ -1,0 +1,130 @@
+﻿@model LotCardVM
+@{
+    ViewData["Title"] = Model.Name;
+    var inv = CultureInfo.InvariantCulture;
+    decimal walletAvailable = ViewBag.WalletAvailable ?? 0m;
+    decimal pricePerKg = Model.WeightKg > 0 ? Math.Round(Model.Price / Model.WeightKg, 2) : 0m;
+    decimal deliveryFee = 350m;
+    decimal total = Model.Price + deliveryFee;
+    bool canAfford = walletAvailable >= total;
+}
+
+<section class="container-tw" style="padding-top:40px">
+
+    <div class="page-head">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="eyebrow">@Model.Code</span>
+                <partial name="_StatusPill" model="Model.Status" />
+            </div>
+            <h1>@Model.Name</h1>
+        </div>
+        <a asp-controller="Lots" asp-action="Index" class="btn btn-tw-soft">
+            <i class="bi bi-arrow-right"></i> العودة للسوق
+        </a>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="note mb-4" style="background:var(--red-bg);border-color:#D9A79C;color:var(--red)">
+            <i class="bi bi-exclamation-triangle-fill" style="color:var(--red)"></i>
+            <div>@TempData["Error"]</div>
+        </div>
+    }
+
+    <div class="row g-4">
+        <!-- تفاصيل اللوط (يمين) -->
+        <div class="col-lg-7">
+            <div class="tw-card overflow-hidden mb-4">
+                <div class="ph @(Model.IsLight ? "light" : "")" style="--c:@Model.ColorHex;height:260px;border-radius:0">
+                    <span class="ph-label">عينة اللون: @Model.ColorName (@Model.ColorHex)</span>
+                </div>
+                <div class="tw-card-pad">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <div class="fs-12 text-faint">المصنع البائع</div>
+                            <div class="fw-bold fs-5">
+                                @Model.Factory
+                                <span class="verified ms-1"><i class="bi bi-patch-check-fill"></i> موثّق</span>
+                            </div>
+                        </div>
+                        <span class="chip"><i class="bi bi-geo-alt"></i> @Model.Governorate</span>
+                    </div>
+
+                    <div class="rule"></div>
+
+                    <div class="eyebrow mb-2">SPECIFICATIONS · المواصفات الفنية</div>
+                    <div class="r-row"><span class="k">نوع الخامة</span><span class="dots"></span><span class="v">@Model.Material</span></div>
+                    <div class="r-row"><span class="k">حالة الفائض</span><span class="dots"></span><span class="v">@Model.Condition</span></div>
+                    <div class="r-row">
+                        <span class="k">اللون</span><span class="dots"></span>
+                        <span class="v d-inline-flex align-items-center gap-2">
+                            <span class="color-dot" style="--c:@Model.ColorHex"></span> @Model.ColorName
+                        </span>
+                    </div>
+                    <div class="r-row"><span class="k">الوزن الإجمالي</span><span class="dots"></span><span class="v mono">@Model.WeightKg.ToString("N0", inv) kg</span></div>
+                    <div class="r-row"><span class="k">عدد الرولات / الأثواب</span><span class="dots"></span><span class="v mono">@(Model.RollsCount > 0 ? Model.RollsCount.ToString() : "قصاقيص بالكيلو")</span></div>
+                    <div class="r-row"><span class="k">متوسط سعر الكيلو</span><span class="dots"></span><span class="v mono">@pricePerKg.ToString("N2", inv) EGP/kg</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ملخص الشراء وحجز الضمان (شمال) -->
+        <div class="col-lg-5">
+            <div class="receipt">
+                <div class="eyebrow mb-1">ESCROW CHECKOUT · حجز الشراء</div>
+                <h3 class="mb-3">ملخص التكلفة</h3>
+
+                <div class="r-row"><span class="k">سعر اللوط</span><span class="dots"></span><span class="v mono">@Model.Price.ToString("N2", inv)</span></div>
+                <div class="r-row"><span class="k">تقدير التوصيل</span><span class="dots"></span><span class="v mono">@deliveryFee.ToString("N2", inv)</span></div>
+                <div class="r-row"><span class="k">عمولة المنصة (على المصنع)</span><span class="dots"></span><span class="v mono">0.00</span></div>
+
+                <div class="rule-dbl"></div>
+
+                <div class="r-row total mb-3">
+                    <span class="k">الإجمالي المطلوب حجزه</span><span class="dots"></span>
+                    <span class="v mono">@total.ToString("N2", inv) EGP</span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center p-3 mb-3" style="background:var(--sand-2);border-radius:10px">
+                    <span class="fs-13 text-muted-tw">رصيد محفظتك المتاح:</span>
+                    <span class="mono fw-bold" style="color:@(canAfford ? "var(--green)" : "var(--red)")">
+                        @walletAvailable.ToString("N0", inv) ج.م
+                    </span>
+                </div>
+
+                @if (Model.Status != "active")
+                {
+                    <button type="button" class="btn btn-tw-soft w-100 btn-lg" disabled>
+                        هذا اللوط محجوز أو مباع حالياً
+                    </button>
+                }
+                else if (!canAfford)
+                {
+                    <a asp-controller="Wallet" asp-action="Index" class="btn btn-tw-accent w-100 btn-lg">
+                        <i class="bi bi-wallet2"></i> اشحن المحفظة لإتمام الشراء
+                    </a>
+                }
+                else
+                {
+                    <form asp-controller="Lots" asp-action="Buy" method="post">
+                        <input type="hidden" name="code" value="@Model.Code" />
+                        <div class="mb-3">
+                            <label class="form-label fs-13">عنوان استلام الورشة</label>
+                            <input type="text" name="deliveryAddress" class="form-control" value="الجيزة — المنطقة الصناعية بأبو رواش" required />
+                        </div>
+                        <button type="submit" class="btn btn-tw-primary w-100 btn-lg">
+                            <i class="bi bi-shield-lock"></i> شراء وحجز المبلغ بالمحفظة
+                        </button>
+                    </form>
+                }
+
+                <div class="note mt-3">
+                    <i class="bi bi-shield-check"></i>
+                    <div class="fs-13">لن يتم تحويل المبلغ للمصنع إلا بعد وصول الشحنة للورشة وإدخال السائق كود الاستلام.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>

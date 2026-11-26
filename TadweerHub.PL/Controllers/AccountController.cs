@@ -2,7 +2,7 @@
 using TadweerHub.PL.Mock;
 using TadweerHub.PL.ViewModels.Account;
 
-namespace TadweerHub.PL.Controllers.Account
+namespace TadweerHub.PL.Controllers
 {
     public class AccountController : Controller
     {

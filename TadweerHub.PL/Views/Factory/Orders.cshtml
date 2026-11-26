@@ -1,0 +1,53 @@
+﻿@model List<OrderRowVM>
+@{
+    ViewData["Title"] = "طلبات لوطاتي";
+    var inv = CultureInfo.InvariantCulture;
+}
+
+<div class="page-head">
+    <div>
+        <h1>طلبات لوطاتي</h1>
+        <p>متابعة الشحنات المباعة ومستحقات المصنع في الضمان.</p>
+    </div>
+</div>
+
+<div class="tw-card">
+    <table class="tw-table">
+        <thead>
+            <tr>
+                <th>رقم الطلب</th>
+                <th>اللوط</th>
+                <th>الورشة</th>
+                <th>سعر اللوط</th>
+                <th>عمولة 2%</th>
+                <th>صافي المستحق</th>
+                <th>السائق</th>
+                <th>الحالة</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var o in Model)
+            {
+                var net = o.LotPrice - o.PlatformCommission;
+                <tr>
+                    <td class="num fw-semibold fs-13">@o.OrderNo</td>
+                    <td>
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="mini-swatch" style="--c:@o.ColorHex"></span>
+                            <div>
+                                <div class="fw-semibold">@o.LotName</div>
+                                <div class="num fs-12 text-faint">@o.LotCode</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>@o.Workshop</td>
+                    <td class="num fs-13">@o.LotPrice.ToString("N0", inv)</td>
+                    <td class="num fs-13" style="color:var(--red)">-@o.PlatformCommission.ToString("N0", inv)</td>
+                    <td><span class="num fw-semibold" style="color:var(--green)">@net.ToString("N0", inv)</span> <span class="cur">ج.م</span></td>
+                    <td class="fs-13">@(o.DriverName ?? "قيد التعيين")</td>
+                    <td><partial name="_StatusPill" model="o.Status" /></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

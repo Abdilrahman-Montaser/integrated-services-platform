@@ -1,0 +1,119 @@
+﻿@model List<OrderRowVM>
+@{
+    ViewData["Title"] = "توصيلاتي";
+    var inv = CultureInfo.InvariantCulture;
+    var activeDeliveries = Model.Where(o => o.Status != "completed").ToList();
+    var completedDeliveries = Model.Where(o => o.Status == "completed").ToList();
+}
+
+<div class="page-head">
+    <div>
+        <h1>توصيلاتي</h1>
+        <p>محمود السيد · سيارة ربع نقل (<span class="mono">أ ب ج 4821</span>)</p>
+    </div>
+    <span class="pill pill-completed"><i></i> متاح للتوصيل</span>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="note mb-4">
+        <i class="bi bi-check-circle-fill"></i>
+        <div>@TempData["Success"]</div>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="note mb-4" style="background:var(--red-bg);border-color:#D9A79C;color:var(--red)">
+        <i class="bi bi-exclamation-triangle-fill" style="color:var(--red)"></i>
+        <div>@TempData["Error"]</div>
+    </div>
+}
+
+<!-- الشحنات النشطة -->
+<div class="row g-4 mb-5">
+    @foreach (var o in activeDeliveries)
+    {
+        <div class="col-lg-6">
+            <div class="tw-card tw-card-pad h-100 d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <span class="ticket-no fs-5">@o.OrderNo</span>
+                        <h3 class="mt-1 mb-0">@o.LotName</h3>
+                    </div>
+                    <partial name="_StatusPill" model="o.Status" />
+                </div>
+
+                <div class="r-row"><span class="k"><i class="bi bi-building"></i> الاستلام من المصنع</span><span class="dots"></span><span class="v">@o.Factory</span></div>
+                <div class="r-row"><span class="k"><i class="bi bi-shop"></i> التسليم إلى الورشة</span><span class="dots"></span><span class="v">@o.Workshop</span></div>
+                <div class="r-row"><span class="k"><i class="bi bi-box-seam"></i> الوزن المعلن</span><span class="dots"></span><span class="v mono">@o.WeightKg.ToString("N0", inv) kg</span></div>
+                <div class="r-row"><span class="k"><i class="bi bi-truck"></i> أجر التوصيل</span><span class="dots"></span><span class="v mono" style="color:var(--green)">@o.DeliveryFee.ToString("N0", inv) EGP</span></div>
+
+                <div class="rule"></div>
+
+                <form asp-controller="Driver" asp-action="ConfirmDelivery" method="post" class="mt-auto">
+                    <input type="hidden" name="orderId" value="@o.Id" />
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fs-13">وزن الميزان الفعلي (كجم)</label>
+                            <input type="number" name="weighedKg" step="0.1" value="@o.WeightKg" class="form-control form-control-sm" dir="ltr" />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fs-13">تذكرة الميزان</label>
+                            <label class="btn btn-tw-soft btn-sm w-100">
+                                <i class="bi bi-camera"></i> إرفاق صورة
+                                <input type="file" class="d-none" accept="image/*" />
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="p-3 mb-3 text-center" style="background:var(--sand-2);border-radius:12px">
+                        <label class="form-label d-block mb-1">كود الاستلام من الورشة (6 أرقام)</label>
+                        <div class="fs-12 text-muted-tw mb-2">للتجربة على @o.OrderNo أدخل: <span class="mono fw-bold">@o.DeliveryCode</span></div>
+                        <input type="text" name="deliveryCode" maxlength="6" pattern="\d{6}" class="form-control text-center mono fw-bold fs-4 mx-auto" style="max-width:220px;letter-spacing:.25em" placeholder="••••••" dir="ltr" required />
+                    </div>
+
+                    <button type="submit" class="btn btn-tw-accent w-100">
+                        <i class="bi bi-check2-all"></i> تأكيد التسليم وتحرير المبلغ
+                    </button>
+                </form>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- سجل التوصيلات المكتملة -->
+<div class="tw-card">
+    <div class="tw-card-head">
+        <h3>التوصيلات المكتملة</h3>
+        <span class="fs-13 text-muted-tw"><span class="mono">@completedDeliveries.Count</span> شحنات</span>
+    </div>
+    <table class="tw-table">
+        <thead>
+            <tr>
+                <th>رقم الطلب</th>
+                <th>اللوط</th>
+                <th>من المصنع</th>
+                <th>إلى الورشة</th>
+                <th>الوزن</th>
+                <th>أجر التوصيل</th>
+                <th>الحالة</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var o in completedDeliveries)
+            {
+                <tr>
+                    <td class="num fw-semibold fs-13">@o.OrderNo</td>
+                    <td class="fw-semibold">@o.LotName</td>
+                    <td class="fs-13">@o.Factory</td>
+                    <td class="fs-13">@o.Workshop</td>
+                    <td class="num fs-13">@o.WeightKg.ToString("N0", inv) كجم</td>
+                    <td><span class="num fw-semibold" style="color:var(--green)">@o.DeliveryFee.ToString("N0", inv)</span> <span class="cur">ج.م</span></td>
+                    <td><partial name="_StatusPill" model="o.Status" /></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

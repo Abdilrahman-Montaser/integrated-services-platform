@@ -1,0 +1,105 @@
+﻿@model WalletSummaryVM
+@{
+    ViewData["Title"] = "المحفظة";
+    var inv = CultureInfo.InvariantCulture;
+    var transactions = ViewBag.Transactions as List<WalletTransactionVM> ?? new();
+}
+
+<section class="container-tw" style="padding-top:40px">
+
+    <div class="page-head">
+        <div>
+            <h1>محفظة الضمان</h1>
+            <p>إدارة رصيد الورشة والمبالغ المحجوزة للطلبات الجارية.</p>
+        </div>
+        <form asp-controller="Wallet" asp-action="Deposit" method="post" class="d-flex gap-2">
+            <input type="hidden" name="amount" value="25000" />
+            <button type="submit" class="btn btn-tw-primary">
+                <i class="bi bi-plus-circle"></i> شحن 25,000 ج.م (تجريبي)
+            </button>
+        </form>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="note mb-4">
+            <i class="bi bi-check-circle-fill"></i>
+            <div>@TempData["Success"]</div>
+        </div>
+    }
+
+    <!-- كروت الرصيد -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="tw-card stat">
+                <div class="lbl"><i class="bi bi-wallet2"></i> الرصيد المتاح للشراء</div>
+                <div>
+                    <span class="val" style="color:var(--green)">@Model.Available.ToString("N0", inv)</span>
+                    <span class="unit">ج.م</span>
+                </div>
+                <div class="delta">جاهز لحجز لوطات جديدة فوراً</div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="tw-card stat">
+                <div class="lbl"><i class="bi bi-shield-lock"></i> المحجوز في الضمان (Escrow)</div>
+                <div>
+                    <span class="val" style="color:var(--blue)">@Model.Held.ToString("N0", inv)</span>
+                    <span class="unit">ج.م</span>
+                </div>
+                <div class="delta" style="color:var(--blue)">يُحرَّر للمصنع عند إدخال السائق كود الاستلام</div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="tw-card stat">
+                <div class="lbl"><i class="bi bi-bank"></i> إجمالي رصيد المحفظة</div>
+                <div>
+                    <span class="val">@Model.Total.ToString("N0", inv)</span>
+                    <span class="unit">ج.م</span>
+                </div>
+                <div class="delta text-muted-tw">المتاح + المحجوز للطلبات النشطة</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- جدول حركات المحفظة -->
+    <div class="tw-card">
+        <div class="tw-card-head">
+            <h3>سجل حركات المحفظة</h3>
+            <span class="fs-13 text-muted-tw"><span class="mono">@transactions.Count</span> حركات مسجلة</span>
+        </div>
+
+        <table class="tw-table">
+            <thead>
+                <tr>
+                    <th>التاريخ</th>
+                    <th>البيان</th>
+                    <th>رقم الطلب</th>
+                    <th>المبلغ</th>
+                    <th>الحالة</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var t in transactions)
+                {
+                    var isPositive = t.Amount >= 0;
+                    <tr>
+                        <td class="num fs-13">@t.Date.ToString("dd/MM/yyyy", inv)</td>
+                        <td class="fw-semibold">@t.Description</td>
+                        <td class="num fs-13">@(t.OrderNo ?? "—")</td>
+                        <td>
+                            <span class="num fw-semibold" style="color:@(isPositive ? "var(--green)" : "var(--ink)")">
+                                @(isPositive ? "+" : "")@t.Amount.ToString("N0", inv)
+                            </span>
+                            <span class="cur">ج.م</span>
+                        </td>
+                        <td><partial name="_StatusPill" model="t.Status" /></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</section>

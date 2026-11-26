@@ -6,7 +6,7 @@ namespace TadweerHub.PL.ViewModels.Orders
     {
         public string Material { get; set; } = "";
         public int RollsCount { get; set; }
-        public decimal? WeighedKg { get; set; }      // وزن الميزان (null لو لسه)
+        public decimal? WeighedKg { get; set; }      
         public string FromAddress { get; set; } = "";
         public string ToAddress { get; set; } = "";
         public string VehiclePlate { get; set; } = "—";

@@ -1,0 +1,97 @@
+﻿@model List<OrderRowVM>
+@{
+    ViewData["Title"] = "لوحة المصنع";
+    var inv = CultureInfo.InvariantCulture;
+    int lotsCount = ViewBag.LotsCount ?? 0;
+    int activeLots = ViewBag.ActiveLots ?? 0;
+    decimal totalSales = ViewBag.TotalSales ?? 0m;
+    decimal pendingPayout = ViewBag.PendingPayout ?? 0m;
+    decimal savedKg = ViewBag.SavedKg ?? 0m;
+    var co2Tons = Math.Round((savedKg / 1000m) * 3.6m, 1);
+    var waterM3 = Math.Round((savedKg / 1000m) * 2700m, 0);
+}
+
+<div class="page-head">
+    <div>
+        <h1>لوحة المصنع</h1>
+        <p>مصنع النيل للنسيج · المحلة الكبرى <span class="verified ms-1"><i class="bi bi-patch-check-fill"></i> حساب موثّق</span></p>
+    </div>
+    <a asp-controller="Factory" asp-action="CreateLot" class="btn btn-tw-primary">
+        <i class="bi bi-plus-circle"></i> إضافة لوط جديد
+    </a>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="tw-card stat">
+            <div class="lbl"><i class="bi bi-stack"></i> لوطاتي المعروضة</div>
+            <div><span class="val">@activeLots</span><span class="unit">من @lotsCount</span></div>
+            <div class="delta">جاهزة للشراء في السوق</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="tw-card stat">
+            <div class="lbl"><i class="bi bi-cash-coin"></i> صافي المبيعات المحرّرة</div>
+            <div><span class="val" style="color:var(--green)">@totalSales.ToString("N0", inv)</span><span class="unit">ج.م</span></div>
+            <div class="delta">بعد خصم عمولة المنصة 2%</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="tw-card stat">
+            <div class="lbl"><i class="bi bi-hourglass-split"></i> مستحقات قيد التسليم</div>
+            <div><span class="val" style="color:var(--blue)">@pendingPayout.ToString("N0", inv)</span><span class="unit">ج.م</span></div>
+            <div class="delta" style="color:var(--blue)">تُحوَّل فور تأكيد التسليم</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="eco h-100">
+            <h3 class="mb-2"><i class="bi bi-recycle"></i> الأثر البيئي</h3>
+            <div class="m">
+                <div><span class="v">@co2Tons.ToString("N1", inv)</span><span class="u">طن CO₂</span></div>
+                <div class="l">انبعاثات تم توفيرها · <span class="mono">@waterM3.ToString("N0", inv)</span> م³ مياه</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="tw-card">
+    <div class="tw-card-head">
+        <h3>أحدث الطلبات على لوطات المصنع</h3>
+        <a asp-controller="Factory" asp-action="Orders" class="btn btn-tw-soft btn-sm">عرض الكل</a>
+    </div>
+
+    <table class="tw-table">
+        <thead>
+            <tr>
+                <th>رقم الطلب</th>
+                <th>اللوط</th>
+                <th>الورشة المشترية</th>
+                <th>السائق</th>
+                <th>صافي المستحق</th>
+                <th>الحالة</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var o in Model)
+            {
+                var net = o.LotPrice - o.PlatformCommission;
+                <tr>
+                    <td class="num fw-semibold fs-13">@o.OrderNo</td>
+                    <td>
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="mini-swatch" style="--c:@o.ColorHex"></span>
+                            <div>
+                                <div class="fw-semibold">@o.LotName</div>
+                                <div class="num fs-12 text-faint">@o.LotCode · @o.WeightKg.ToString("N0", inv) كجم</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>@o.Workshop</td>
+                    <td class="fs-13">@(o.DriverName ?? "بانتظار التعيين")</td>
+                    <td><span class="num fw-semibold">@net.ToString("N0", inv)</span> <span class="cur">ج.م</span></td>
+                    <td><partial name="_StatusPill" model="o.Status" /></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

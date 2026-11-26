@@ -1,0 +1,93 @@
+﻿@model List<LotCardVM>
+@{
+    ViewData["Title"] = "تصفّح اللوطات";
+    var materials = ViewBag.Materials as List<string> ?? new();
+    var governorates = ViewBag.Governorates as List<string> ?? new();
+    string? selMat = ViewBag.SelectedMaterial;
+    string? selGov = ViewBag.SelectedGov;
+    decimal? maxPrice = ViewBag.MaxPrice;
+    string? q = ViewBag.Query;
+}
+
+<section class="container-tw" style="padding-top:40px">
+
+    <div class="page-head">
+        <div>
+            <h1>سوق اللوطات المتاحة</h1>
+            <p><span class="mono">@Model.Count</span> لوطات جاهزة للشراء بضمان المحفظة</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- الفلتر الجانبي -->
+        <div class="col-lg-3">
+            <form asp-controller="Lots" asp-action="Index" method="get" class="tw-card tw-card-pad">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="fs-5 m-0">تصفية النتائج</h3>
+                    <a asp-controller="Lots" asp-action="Index" class="fs-12">إعادة ضبط</a>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">بحث بالاسم أو الكود</label>
+                    <input type="text" name="q" value="@q" class="form-control" placeholder="مثال: دنيم أو LOT-0412" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">نوع الخامة</label>
+                    <select name="material" class="form-select">
+                        <option value="">كل الخامات</option>
+                        @foreach (var m in materials)
+                        {
+                            <option value="@m" selected="@(selMat == m)">@m</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">المحافظة</label>
+                    <select name="governorate" class="form-select">
+                        <option value="">كل المحافظات</option>
+                        @foreach (var g in governorates)
+                        {
+                            <option value="@g" selected="@(selGov == g)">@g</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">الحد الأقصى للسعر (ج.م)</label>
+                    <input type="number" name="maxPrice" value="@maxPrice" class="form-control" placeholder="مثال: 30000" dir="ltr" />
+                </div>
+
+                <button type="submit" class="btn btn-tw-primary w-100">
+                    <i class="bi bi-funnel"></i> تطبيق الفلتر
+                </button>
+            </form>
+        </div>
+
+        <!-- شبكة الكروت -->
+        <div class="col-lg-9">
+            @if (!Model.Any())
+            {
+                <div class="tw-card tw-card-pad text-center py-5">
+                    <i class="bi bi-inbox fs-1 text-faint"></i>
+                    <h4 class="mt-2">مفيش لوطات مطابقة للبحث</h4>
+                    <p class="text-muted-tw">جرّب تغيير نوع الخامة أو إزالة الحد الأقصى للسعر.</p>
+                    <a asp-controller="Lots" asp-action="Index" class="btn btn-tw-soft">عرض كل اللوطات</a>
+                </div>
+            }
+            else
+            {
+                <div class="row g-4">
+                    @foreach (var lot in Model)
+                    {
+                        <div class="col-md-6 col-xl-4">
+                            <partial name="_LotCard" model="lot" />
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+</section>

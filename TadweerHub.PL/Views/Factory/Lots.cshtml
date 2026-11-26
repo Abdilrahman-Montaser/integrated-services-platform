@@ -1,0 +1,81 @@
+﻿@model List<LotCardVM>
+@{
+    ViewData["Title"] = "لوطاتي";
+    var inv = CultureInfo.InvariantCulture;
+}
+
+<div class="page-head">
+    <div>
+        <h1>لوطاتي</h1>
+        <p><span class="mono">@Model.Count</span> لوطات مسجلة باسم مصنع النيل للنسيج</p>
+    </div>
+    <a asp-controller="Factory" asp-action="CreateLot" class="btn btn-tw-primary">
+        <i class="bi bi-plus-circle"></i> إضافة لوط جديد
+    </a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="note mb-4">
+        <i class="bi bi-check-circle-fill"></i>
+        <div>@TempData["Success"]</div>
+    </div>
+}
+
+<div class="tw-card">
+    <table class="tw-table">
+        <thead>
+            <tr>
+                <th>اللوط</th>
+                <th>الخامة والحالة</th>
+                <th>الوزن / الرولات</th>
+                <th>السعر الإجمالي</th>
+                <th>الحالة</th>
+                <th style="width:170px">إجراء</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var l in Model)
+            {
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="mini-swatch @(l.IsLight ? "light" : "")" style="--c:@l.ColorHex"></span>
+                            <div>
+                                <div class="fw-semibold">@l.Name</div>
+                                <div class="num fs-12 text-faint">@l.Code · @l.ColorName</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="fw-semibold fs-13">@l.Material</div>
+                        <div class="fs-12 text-muted-tw">@l.Condition</div>
+                    </td>
+                    <td class="fs-13">
+                        <span class="num fw-semibold">@l.WeightKg.ToString("N0", inv)</span> كجم
+                        <div class="fs-12 text-faint">@(l.RollsCount > 0 ? $"{l.RollsCount} رول" : "قصاقيص")</div>
+                    </td>
+                    <td><span class="num fw-semibold">@l.Price.ToString("N0", inv)</span> <span class="cur">ج.م</span></td>
+                    <td><partial name="_StatusPill" model="l.Status" /></td>
+                    <td>
+                        @if (l.Status == "draft")
+                        {
+                            <form asp-controller="Factory" asp-action="PublishLot" method="post">
+                                <input type="hidden" name="code" value="@l.Code" />
+                                <button type="submit" class="btn btn-tw-primary btn-sm">
+                                    <i class="bi bi-send"></i> نشر الآن
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <a asp-controller="Lots" asp-action="Details" asp-route-id="@l.Code" class="btn btn-tw-soft btn-sm">
+                                معاينة بالسوق
+                            </a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

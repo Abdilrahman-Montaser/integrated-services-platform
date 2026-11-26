@@ -1,0 +1,118 @@
+﻿@model LotCardVM
+@{
+    ViewData["Title"] = "إضافة لوط جديد";
+}
+
+<div class="page-head">
+    <div>
+        <h1>إضافة لوط جديد</h1>
+        <p>أدخل مواصفات الفائض بدقة ليظهر للورش في السوق.</p>
+    </div>
+    <a asp-controller="Factory" asp-action="Lots" class="btn btn-tw-soft">
+        <i class="bi bi-arrow-right"></i> العودة للوطاتي
+    </a>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="note mb-4" style="background:var(--red-bg);border-color:#D9A79C;color:var(--red)">
+        <i class="bi bi-exclamation-triangle-fill" style="color:var(--red)"></i>
+        <div>@TempData["Error"]</div>
+    </div>
+}
+
+<form asp-controller="Factory" asp-action="CreateLot" method="post" class="row g-4">
+    <div class="col-lg-8">
+        <div class="tw-card tw-card-pad">
+            <h3 class="fs-5 mb-3">بيانات الخامة والكمية</h3>
+
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <label class="form-label">عنوان اللوط</label>
+                    <input asp-for="Name" class="form-control" placeholder="مثال: قطن سنجل ليكرا كحلي — بواقي تصدير" required />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">نوع الخامة</label>
+                    <select asp-for="Material" class="form-select">
+                        <option value="قطن">قطن</option>
+                        <option value="جينز">جينز / دنيم</option>
+                        <option value="بوليستر">بوليستر</option>
+                        <option value="كتان">كتان</option>
+                        <option value="صوف">صوف</option>
+                        <option value="فسكوز">فسكوز</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">حالة الفائض</label>
+                    <select asp-for="Condition" class="form-select">
+                        <option value="أطوال كاملة">أطوال كاملة</option>
+                        <option value="بواقي قص — جديد">بواقي قص — جديد</option>
+                        <option value="رولات ناقصة">رولات ناقصة</option>
+                        <option value="قصاقيص مختلطة">قصاقيص مختلطة</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">اسم اللون</label>
+                    <input asp-for="ColorName" class="form-control" placeholder="مثال: كحلي غامق" required />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">درجة اللون (Swatch)</label>
+                    <input asp-for="ColorHex" type="color" class="form-control form-control-color w-100" style="height:44px" />
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">الوزن الإجمالي (كجم)</label>
+                    <input asp-for="WeightKg" type="number" step="1" min="1" class="form-control" placeholder="1000" dir="ltr" required />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">عدد الرولات (0 للقصاقيص)</label>
+                    <input asp-for="RollsCount" type="number" min="0" class="form-control" placeholder="15" dir="ltr" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">السعر الإجمالي (ج.م)</label>
+                    <input asp-for="Price" type="number" step="1" min="1" class="form-control" placeholder="18000" dir="ltr" required />
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label">محافظة الاستلام</label>
+                    <select asp-for="Governorate" class="form-select">
+                        <option value="المحلة الكبرى">المحلة الكبرى</option>
+                        <option value="العاشر من رمضان">العاشر من رمضان</option>
+                        <option value="الإسكندرية">الإسكندرية</option>
+                        <option value="شبرا الخيمة">شبرا الخيمة</option>
+                        <option value="القاهرة">القاهرة</option>
+                        <option value="الجيزة">الجيزة</option>
+                        <option value="بورسعيد">بورسعيد</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="tw-card tw-card-pad mb-3">
+            <h3 class="fs-5 mb-3">صور اللوط</h3>
+            <label class="upload d-block">
+                <i class="bi bi-camera"></i>
+                <b>ارفع صور الأثواب أو القصاقيص</b>
+                <span class="fs-12">PNG أو JPG بحد أقصى 5 ميجابايت</span>
+                <input type="file" class="d-none" accept="image/*" multiple />
+            </label>
+        </div>
+
+        <div class="tw-card tw-card-pad">
+            <div class="note mb-3">
+                <i class="bi bi-info-circle"></i>
+                <div class="fs-13">تُخصم عمولة المنصة <strong class="mono">2%</strong> فقط عند إتمام التسليم وتحرير الضمان.</div>
+            </div>
+
+            <button type="submit" name="submitAction" value="publish" class="btn btn-tw-primary w-100 btn-lg mb-2">
+                <i class="bi bi-check2-circle"></i> نشر اللوط في السوق
+            </button>
+            <button type="submit" name="submitAction" value="draft" class="btn btn-tw-soft w-100">
+                حفظ كمسودة
+            </button>
+        </div>
+    </div>
+</form>

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using TadweerHub.BLL.Interfaces;
-using TadweerHub.BLL.Services;
+using TadweerHub.BLL.Services.Interfaces;
+using TadweerHub.BLL.Services.Classes;
 using TadweerHub.DAL.Contexts;
 using TadweerHub.DAL.Repositories.Classes;
 using TadweerHub.DAL.Repositories.Interfaces;
@@ -23,6 +23,7 @@ builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<ILotRepository, LotRepository>();
 builder.Services.AddScoped<ILotImageRepository, LotImageRepository>();
 builder.Services.AddScoped<IMaterialTypeRepository, MaterialTypeRepository>();
+builder.Services.AddScoped<IRegistrationRequestRepository, RegistrationRequestRepository>();
 builder.Services.AddScoped<IAdminServices, AdminServices>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
